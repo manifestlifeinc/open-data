@@ -1,1 +1,13 @@
 x00_pop_housing_counts.csv filter=lfs diff=lfs merge=lfs -text
+x01_age_sex.csv filter=lfs diff=lfs merge=lfs -text
+x02_race.csv filter=lfs diff=lfs merge=lfs -text
+x03_hispanic_or_latino.csv filter=lfs diff=lfs merge=lfs -text
+x04_ancestry.csv filter=lfs diff=lfs merge=lfs -text
+x05_foreign_born_citizenship.csv filter=lfs diff=lfs merge=lfs -text
+x06_place_of_birth.csv filter=lfs diff=lfs merge=lfs -text
+x15_education.csv filter=lfs diff=lfs merge=lfs -text
+x14_school_enrollment.csv filter=lfs diff=lfs merge=lfs -text
+x16_language_spoken_at_home.csv filter=lfs diff=lfs merge=lfs -text
+x19_income.csv filter=lfs diff=lfs merge=lfs -text
+x24_industry_occupation.csv filter=lfs diff=lfs merge=lfs -text
+x25_housing_characteristics.csv filter=lfs diff=lfs merge=lfs -text
