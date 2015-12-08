@@ -1,3 +1,2 @@
 # open-data
-open data sets hosted by CDS 
-
+Open data sets, hosted by IBM Cloud Data Services.
