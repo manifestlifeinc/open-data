@@ -17,22 +17,7 @@ topics. Public officials, planners, and entrepreneurs use this
 information to assess the past and plan the future.
 
 #### Files
-
-The data are broken up into separate CSV files organized by theme to
-make usage more manageable.
--   [x00\_pop\_housing\_counts.csv](x00_pop_housing_counts.csv)
--   [x01\_age\_sex.csv](x01_age_sex.csv)
--   [x02\_race.csv](x02_race.csv)
--   [x03\_hispanic\_or\_latino.csv](x03_hispanic_or_latino.csv)
--   [x04\_ancestry.csv](x04_ancestry.csv)
--   [x05\_foreign\_born\_citizenship.csv](x05_foreign_born_citizenship.csv)
--   [x06\_place\_of\_birth.csv](x06_place_of_birth.csv)
--   [x14\_school\_enrollment.csv](x14_school_enrollment.csv)
--   [x15\_education.csv](x15_education.csv)
--   [x16\_language\_spoken\_at\_home.csv](x16_language_spoken_at_home.csv)
--   [x19\_income.csv](x19_income.csv)
--   [x24\_industry\_occupation.csv](x24_industry_occupation.csv)
--   [x25\_housing\_characteristics.csv](x25_housing_characteristics.csv)
+(coming soon!)
 
 #### Technical Details
 
