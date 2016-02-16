@@ -1,6 +1,6 @@
 # Samples
 
-Sample analysis scripts making use of CDS open data sets.
+Sample analysis scripts making use of CDS open data sets. Here are the featured files in this directory
 
 ## Contents
 
@@ -8,7 +8,7 @@ Sample analysis scripts making use of CDS open data sets.
 
 Versions:
 
-- [Python Jupyter notebook](shopper_insights.ipynb) (all processing done in memory)
+- [Python Jupyter notebook](shopper_insights.ipynb) and [Static HTML copy](shopper_insights.html) (all processing done in memory)
 - [PySpark Jupyter notebook](shopper_insights_pyspark.ipynb) (most processing done using Spark) ***(incomplete)***
 
 ### Urbanity
@@ -16,6 +16,7 @@ Versions:
 Exploration of an academic study of urban structure and density described in the June 2014 article, ["From Jurisdictional to Functional Analysis of Urban Cores & Suburbs"](http://www.newgeography.com/content/004349-from-jurisdictional-functional-analysis-urban-cores-suburbs) in [new geography](http://www.newgeography.com/). 
 
 - [Python Jupyter notebook](urbanity.ipynb) 
+- [Static HTML copy](urbanity.html)
 
 
 ## Terms of Use
