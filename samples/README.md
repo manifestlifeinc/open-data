@@ -8,7 +8,7 @@ Sample analysis scripts making use of CDS open data sets. Here are the featured 
 
 Versions:
 
-- [Python Jupyter notebook](shopper_insights.ipynb) and [Static HTML copy](http://ibm-cds-labs.github.io/open-data/samples/shopper_insights.html) (all processing done in memory)
+- [Python Jupyter notebook](shopper-insights.ipynb) and [Static HTML copy](http://ibm-cds-labs.github.io/open-data/samples/shopper-insights.html) (all processing done in memory)
 - [PySpark Jupyter notebook](shopper_insights_pyspark.ipynb) (most processing done using Spark) ***(incomplete)***
 
 ### Urbanity
