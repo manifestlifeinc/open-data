@@ -1,5 +1,10 @@
 # open-data
-Open data sets, hosted by IBM Cloud Data Services.
+
+Open data and tools hosted by IBM Cloud Data Services (CDS).
+
+While [http://opendata.mybluemix.net/](http://opendata.mybluemix.net/) is the primary home page for CDS' open data work, here you can find processing tools, analytics scripts and smaller data sets.
+
+Each directory has it's own specific README.md file describing its contents and purpose.
 
 
 ## Terms of Use
