@@ -230,7 +230,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">geo_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://opendata.mybluemix.net/uscensus/areas.csv.gz&#39;</span><span class="p">,</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">geo_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://opendata.mybluemix.net/uscensus/areas.csv.gz&#39;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&#39;gzip&#39;</span><span class="p">,</span> 
                     <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GEOID10&#39;</span><span class="p">,</span><span class="s">&#39;ALAND10&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;GEOID10&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">})</span>
 <span class="n">geo_df</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;86000US&quot;</span> <span class="o">+</span> <span class="n">geo_df</span><span class="p">[</span><span class="s">&#39;GEOID10&#39;</span><span class="p">]</span>
 <span class="n">geo_df</span> <span class="o">=</span> <span class="n">geo_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;GEOID&#39;</span><span class="p">)</span>
@@ -313,7 +313,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">pop_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://opendata.mybluemix.net/uscensus/x01_age_sex.csv.gz&#39;</span><span class="p">,</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">pop_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://opendata.mybluemix.net/uscensus/x01_age_sex.csv.gz&#39;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&#39;gzip&#39;</span><span class="p">,</span> 
                      <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">,</span><span class="s">&#39;B01001e1&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;GEOID&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">})</span>
 <span class="n">pop_df</span> <span class="o">=</span> <span class="n">pop_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;GEOID&#39;</span><span class="p">)</span>
 <span class="n">pop_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -388,7 +388,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">housing_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://opendata.mybluemix.net/uscensus/x25_housing_characteristics.csv.gz&#39;</span><span class="p">,</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">housing_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://opendata.mybluemix.net/uscensus/x25_housing.csv.gz&#39;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&#39;gzip&#39;</span><span class="p">,</span> 
                      <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">,</span><span class="s">&#39;B25035e1&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;GEOID&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">})</span>
 <span class="n">housing_df</span> <span class="o">=</span> <span class="n">housing_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;GEOID&#39;</span><span class="p">)</span>
 <span class="n">housing_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
@@ -419,24 +419,24 @@ div#notebook {
   </thead>
   <tbody>
     <tr>
-      <th>86000US48360</th>
-      <td>1990</td>
-    </tr>
-    <tr>
-      <th>86000US84026</th>
-      <td>1977</td>
-    </tr>
-    <tr>
-      <th>86000US10706</th>
+      <th>86000US14441</th>
       <td>1939</td>
     </tr>
     <tr>
-      <th>86000US28606</th>
-      <td>1981</td>
+      <th>86000US45324</th>
+      <td>1969</td>
     </tr>
     <tr>
-      <th>86000US68454</th>
-      <td>1951</td>
+      <th>86000US28073</th>
+      <td>1980</td>
+    </tr>
+    <tr>
+      <th>86000US92394</th>
+      <td>2000</td>
+    </tr>
+    <tr>
+      <th>86000US43212</th>
+      <td>1955</td>
     </tr>
   </tbody>
 </table>
@@ -512,39 +512,39 @@ div#notebook {
   </thead>
   <tbody>
     <tr>
-      <th>86000US24060</th>
-      <td>24060</td>
-      <td>343525684</td>
-      <td>53541</td>
-      <td>1980</td>
+      <th>86000US12176</th>
+      <td>12176</td>
+      <td>8614680</td>
+      <td>391</td>
+      <td>1969</td>
     </tr>
     <tr>
-      <th>86000US15610</th>
-      <td>15610</td>
-      <td>99894576</td>
-      <td>3650</td>
-      <td>1977</td>
+      <th>86000US66412</th>
+      <td>66412</td>
+      <td>125977765</td>
+      <td>249</td>
+      <td>1951</td>
     </tr>
     <tr>
-      <th>86000US14618</th>
-      <td>14618</td>
-      <td>25069000</td>
-      <td>22110</td>
-      <td>1958</td>
+      <th>86000US55932</th>
+      <td>55932</td>
+      <td>131701798</td>
+      <td>2285</td>
+      <td>1972</td>
     </tr>
     <tr>
-      <th>86000US79738</th>
-      <td>79738</td>
-      <td>833166609</td>
-      <td>301</td>
-      <td>1974</td>
+      <th>86000US52159</th>
+      <td>52159</td>
+      <td>197123904</td>
+      <td>2583</td>
+      <td>1946</td>
     </tr>
     <tr>
-      <th>86000US44437</th>
-      <td>44437</td>
-      <td>10211388</td>
-      <td>4127</td>
-      <td>1956</td>
+      <th>86000US33332</th>
+      <td>33332</td>
+      <td>79494141</td>
+      <td>11791</td>
+      <td>2000</td>
     </tr>
   </tbody>
 </table>
@@ -619,36 +619,36 @@ persons per hectare = persons / (area in square meters / 10,000)</p>
   </thead>
   <tbody>
     <tr>
-      <th>86000US61537</th>
-      <td>61537</td>
-      <td>152917002</td>
-      <td>2871</td>
-      <td>1956</td>
-      <td>18.774891</td>
+      <th>86000US43402</th>
+      <td>43402</td>
+      <td>289332249</td>
+      <td>32020</td>
+      <td>1976</td>
+      <td>110.668618</td>
     </tr>
     <tr>
-      <th>86000US20765</th>
-      <td>20765</td>
-      <td>1207946</td>
-      <td>465</td>
-      <td>1939</td>
-      <td>384.950983</td>
+      <th>86000US69156</th>
+      <td>69156</td>
+      <td>842102443</td>
+      <td>637</td>
+      <td>1957</td>
+      <td>0.756440</td>
     </tr>
     <tr>
-      <th>86000US66854</th>
-      <td>66854</td>
-      <td>261101579</td>
-      <td>781</td>
-      <td>1958</td>
-      <td>2.991173</td>
+      <th>86000US05350</th>
+      <td>05350</td>
+      <td>94088475</td>
+      <td>726</td>
+      <td>1970</td>
+      <td>7.716142</td>
     </tr>
     <tr>
-      <th>86000US63113</th>
-      <td>63113</td>
-      <td>6574098</td>
-      <td>12239</td>
-      <td>1939</td>
-      <td>1861.700267</td>
+      <th>86000US36790</th>
+      <td>36790</td>
+      <td>13043965</td>
+      <td>80</td>
+      <td>1991</td>
+      <td>6.133104</td>
     </tr>
   </tbody>
 </table>
@@ -672,7 +672,7 @@ persons per hectare = persons / (area in square meters / 10,000)</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">urban_df</span><span class="p">[</span><span class="s">&#39;CAT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;EXURBAN&#39;</span>
@@ -710,7 +710,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 </div>
 </div>
 
-<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -794,7 +794,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># look at a few records to do a quick sanity check</span>
@@ -809,7 +809,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -836,274 +836,274 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
   </thead>
   <tbody>
     <tr>
-      <th>86000US62675</th>
-      <td>62675</td>
-      <td>282900573</td>
-      <td>6065</td>
-      <td>1973</td>
-      <td>21.438627</td>
+      <th>86000US49633</th>
+      <td>49633</td>
+      <td>425537144</td>
+      <td>3475</td>
+      <td>1980</td>
+      <td>8.166150</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US39063</th>
-      <td>39063</td>
-      <td>251294074</td>
-      <td>3477</td>
-      <td>1977</td>
-      <td>13.836379</td>
+      <th>86000US32343</th>
+      <td>32343</td>
+      <td>68672756</td>
+      <td>3107</td>
+      <td>2002</td>
+      <td>45.243561</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US63530</th>
-      <td>63530</td>
-      <td>258105985</td>
-      <td>871</td>
-      <td>1975</td>
-      <td>3.374583</td>
+      <th>86000US56152</th>
+      <td>56152</td>
+      <td>342621130</td>
+      <td>1579</td>
+      <td>1948</td>
+      <td>4.608589</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US71969</th>
-      <td>71969</td>
-      <td>85824437</td>
-      <td>315</td>
-      <td>1966</td>
-      <td>3.670283</td>
+      <th>86000US18011</th>
+      <td>18011</td>
+      <td>42688626</td>
+      <td>5548</td>
+      <td>1980</td>
+      <td>129.964361</td>
+      <td>SUBURBANLATE</td>
+    </tr>
+    <tr>
+      <th>86000US69221</th>
+      <td>69221</td>
+      <td>1186682202</td>
+      <td>205</td>
+      <td>1958</td>
+      <td>0.172751</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US71406</th>
-      <td>71406</td>
-      <td>20585313</td>
-      <td>367</td>
-      <td>1982</td>
-      <td>17.828245</td>
+      <th>86000US17343</th>
+      <td>17343</td>
+      <td>1981369</td>
+      <td>41</td>
+      <td>NaN</td>
+      <td>20.692763</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US48228</th>
-      <td>48228</td>
-      <td>22299440</td>
-      <td>52191</td>
-      <td>1952</td>
-      <td>2340.462361</td>
+      <th>86000US49962</th>
+      <td>49962</td>
+      <td>258690000</td>
+      <td>137</td>
+      <td>1976</td>
+      <td>0.529591</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US15325</th>
+      <td>15325</td>
+      <td>626186</td>
+      <td>466</td>
+      <td>1947</td>
+      <td>744.187829</td>
       <td>SUBURBANEARLY</td>
     </tr>
     <tr>
-      <th>86000US62326</th>
-      <td>62326</td>
-      <td>196757473</td>
-      <td>2267</td>
-      <td>1959</td>
-      <td>11.521799</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US54806</th>
-      <td>54806</td>
-      <td>686984914</td>
-      <td>11496</td>
-      <td>1950</td>
-      <td>16.733992</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US03457</th>
-      <td>03457</td>
-      <td>59525163</td>
-      <td>695</td>
-      <td>1968</td>
-      <td>11.675735</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US34609</th>
-      <td>34609</td>
-      <td>57604857</td>
-      <td>37643</td>
-      <td>1996</td>
-      <td>653.469203</td>
-      <td>SUBURBANLATE</td>
-    </tr>
-    <tr>
-      <th>86000US85037</th>
-      <td>85037</td>
-      <td>21201148</td>
-      <td>46208</td>
-      <td>1993</td>
-      <td>2179.504619</td>
-      <td>SUBURBANLATE</td>
-    </tr>
-    <tr>
-      <th>86000US13752</th>
-      <td>13752</td>
-      <td>125667175</td>
-      <td>788</td>
-      <td>1964</td>
-      <td>6.270532</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US35808</th>
-      <td>35808</td>
-      <td>149469695</td>
-      <td>1475</td>
-      <td>1997</td>
-      <td>9.868221</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US79324</th>
-      <td>79324</td>
-      <td>183668441</td>
-      <td>6</td>
-      <td>1964</td>
-      <td>0.032668</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US14892</th>
-      <td>14892</td>
-      <td>111047897</td>
-      <td>8074</td>
+      <th>86000US69347</th>
+      <td>69347</td>
+      <td>1130457462</td>
+      <td>1113</td>
       <td>1951</td>
-      <td>72.707365</td>
+      <td>0.984557</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US46039</th>
-      <td>46039</td>
-      <td>70112356</td>
-      <td>843</td>
-      <td>1949</td>
-      <td>12.023558</td>
+      <th>86000US44904</th>
+      <td>44904</td>
+      <td>132793989</td>
+      <td>14135</td>
+      <td>1976</td>
+      <td>106.443071</td>
+      <td>SUBURBANEARLY</td>
+    </tr>
+    <tr>
+      <th>86000US23109</th>
+      <td>23109</td>
+      <td>44520880</td>
+      <td>2358</td>
+      <td>1974</td>
+      <td>52.963913</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US15555</th>
-      <td>15555</td>
-      <td>194409</td>
-      <td>64</td>
-      <td>1939</td>
-      <td>329.202866</td>
+      <th>86000US75462</th>
+      <td>75462</td>
+      <td>517796863</td>
+      <td>11650</td>
+      <td>1987</td>
+      <td>22.499171</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US45307</th>
-      <td>45307</td>
-      <td>414586</td>
-      <td>311</td>
-      <td>1944</td>
-      <td>750.145929</td>
+      <th>86000US30822</th>
+      <td>30822</td>
+      <td>90428783</td>
+      <td>820</td>
+      <td>1973</td>
+      <td>9.067909</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US14774</th>
-      <td>14774</td>
-      <td>461338</td>
-      <td>260</td>
-      <td>1939</td>
-      <td>563.578114</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US86325</th>
-      <td>86325</td>
-      <td>155313546</td>
-      <td>4708</td>
-      <td>1998</td>
-      <td>30.312874</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US76305</th>
-      <td>76305</td>
-      <td>567423627</td>
-      <td>4510</td>
+      <th>86000US45064</th>
+      <td>45064</td>
+      <td>81965501</td>
+      <td>2827</td>
       <td>1975</td>
-      <td>7.948206</td>
+      <td>34.490120</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US24501</th>
-      <td>24501</td>
-      <td>99778293</td>
-      <td>26605</td>
+      <th>86000US11694</th>
+      <td>11694</td>
+      <td>3537005</td>
+      <td>21725</td>
+      <td>1956</td>
+      <td>6142.202230</td>
+      <td>URBAN</td>
+    </tr>
+    <tr>
+      <th>86000US57239</th>
+      <td>57239</td>
+      <td>118196071</td>
+      <td>257</td>
+      <td>1964</td>
+      <td>2.174353</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US83122</th>
+      <td>83122</td>
+      <td>33487381</td>
+      <td>469</td>
+      <td>1972</td>
+      <td>14.005276</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US22546</th>
+      <td>22546</td>
+      <td>420439696</td>
+      <td>15952</td>
+      <td>1994</td>
+      <td>37.941232</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US38476</th>
+      <td>38476</td>
+      <td>108030417</td>
+      <td>945</td>
+      <td>1997</td>
+      <td>8.747536</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US97008</th>
+      <td>97008</td>
+      <td>12836384</td>
+      <td>29684</td>
+      <td>1977</td>
+      <td>2312.489249</td>
+      <td>SUBURBANEARLY</td>
+    </tr>
+    <tr>
+      <th>86000US79035</th>
+      <td>79035</td>
+      <td>1734062183</td>
+      <td>4989</td>
+      <td>1970</td>
+      <td>2.877059</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US20765</th>
+      <td>20765</td>
+      <td>1207946</td>
+      <td>465</td>
+      <td>1939</td>
+      <td>384.950983</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US62704</th>
+      <td>62704</td>
+      <td>31260102</td>
+      <td>39883</td>
+      <td>1965</td>
+      <td>1275.843566</td>
+      <td>SUBURBANEARLY</td>
+    </tr>
+    <tr>
+      <th>86000US99686</th>
+      <td>99686</td>
+      <td>8181770030</td>
+      <td>4000</td>
+      <td>1978</td>
+      <td>0.488892</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US95602</th>
+      <td>95602</td>
+      <td>127854803</td>
+      <td>18049</td>
+      <td>1979</td>
+      <td>141.167947</td>
+      <td>SUBURBANEARLY</td>
+    </tr>
+    <tr>
+      <th>86000US93501</th>
+      <td>93501</td>
+      <td>424305020</td>
+      <td>5411</td>
+      <td>1973</td>
+      <td>12.752618</td>
+      <td>EXURBAN</td>
+    </tr>
+    <tr>
+      <th>86000US14543</th>
+      <td>14543</td>
+      <td>65184440</td>
+      <td>3073</td>
       <td>1968</td>
-      <td>266.641162</td>
-      <td>SUBURBANEARLY</td>
-    </tr>
-    <tr>
-      <th>86000US75684</th>
-      <td>75684</td>
-      <td>261608115</td>
-      <td>8114</td>
-      <td>1981</td>
-      <td>31.015857</td>
+      <td>47.143153</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US55369</th>
-      <td>55369</td>
-      <td>62087528</td>
-      <td>33164</td>
-      <td>1982</td>
-      <td>534.149145</td>
-      <td>SUBURBANLATE</td>
-    </tr>
-    <tr>
-      <th>86000US24090</th>
-      <td>24090</td>
-      <td>245964335</td>
-      <td>5138</td>
-      <td>1982</td>
-      <td>20.889207</td>
+      <th>86000US07926</th>
+      <td>07926</td>
+      <td>685287</td>
+      <td>97</td>
+      <td>1944</td>
+      <td>141.546535</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US01438</th>
-      <td>01438</td>
-      <td>1403431</td>
-      <td>359</td>
-      <td>1941</td>
-      <td>255.801675</td>
+      <th>86000US58368</th>
+      <td>58368</td>
+      <td>1678826898</td>
+      <td>3907</td>
+      <td>1967</td>
+      <td>2.327220</td>
       <td>EXURBAN</td>
     </tr>
     <tr>
-      <th>86000US72631</th>
-      <td>72631</td>
-      <td>123619384</td>
-      <td>4586</td>
-      <td>1988</td>
-      <td>37.097742</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US83450</th>
-      <td>83450</td>
-      <td>247045800</td>
-      <td>1043</td>
-      <td>1976</td>
-      <td>4.221889</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US14733</th>
-      <td>14733</td>
-      <td>71801996</td>
-      <td>4216</td>
-      <td>1943</td>
-      <td>58.717031</td>
-      <td>EXURBAN</td>
-    </tr>
-    <tr>
-      <th>86000US96825</th>
-      <td>96825</td>
-      <td>29041936</td>
-      <td>30142</td>
-      <td>1976</td>
-      <td>1037.878467</td>
-      <td>SUBURBANEARLY</td>
+      <th>86000US02474</th>
+      <td>02474</td>
+      <td>7905847</td>
+      <td>26646</td>
+      <td>1939</td>
+      <td>3370.416857</td>
+      <td>URBAN</td>
     </tr>
   </tbody>
 </table>
@@ -1127,10 +1127,10 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install --user cartodb
+<div class=" highlight hl-ipython2"><pre><span class="c">#!pip install --user cartodb</span>
 <span class="c"># Set up cartodb module for use</span>
 <span class="kn">from</span> <span class="nn">cartodb</span> <span class="kn">import</span> <span class="n">CartoDBAPIKey</span><span class="p">,</span> <span class="n">CartoDBException</span>
 <span class="c"># Learn how to use the CartoDB SQL API here:</span>
@@ -1156,7 +1156,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># get all non-exurban zips</span>
@@ -1172,7 +1172,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -1256,7 +1256,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
@@ -1272,7 +1272,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># send SQL INSERT statements to CartoDB</span>
@@ -1293,8 +1293,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 10002, u&apos;time&apos;: 0.079}
-{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 53.493}
+<pre>(&apos;some error ocurred&apos;, CartoDBException(&apos;Unknown error occurred&apos;,))
 </pre>
 </div>
 </div>
@@ -1314,7 +1313,7 @@ See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stabl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="nx">javascript</span>
