@@ -174,11 +174,20 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Simple-Customer-Insights">Simple Customer Insights<a class="anchor-link" href="#Simple-Customer-Insights">&#182;</a></h1><p><em>version 0.7</em></p>
-<p>February 17, 2016
-<a href="https://developer.ibm.com/clouddataservices/">https://developer.ibm.com/clouddataservices/</a></p>
+<h1 id="Simple-Shopper-Insights">Simple Shopper Insights<a class="anchor-link" href="#Simple-Shopper-Insights">&#182;</a></h1><p>last modified: February, 2016</p>
+<p>author: <a href="https://developer.ibm.com/clouddataservices/author/rrsingh/">Raj Singh</a></p>
+<p>original: <a href="https://github.com/ibm-cds-labs/open-data/tree/master/samples">https://github.com/ibm-cds-labs/open-data/tree/master/samples</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Overview">Overview<a class="anchor-link" href="#Overview">&#182;</a></h2><p>Today, an ever growing wealth of public data, e.g. census, geospatial, demographic, incident, traffic, etc., is available to fuel analytic insights when combined with corporate data. Your own data only tells you what your business is doing. With open data, you learn what the world is doing. And the combination of the two allows you to align business practices with the market.</p>
-<p><strong>Simple Customer Insights</strong> is about democratizing big data analytics with open data and cloud-based analytics. It's a <a href="http://jupyter.org/">Jupyter notebook</a> that runs best in <a href="http://www.ibm.com/analytics/us/en/technology/cloud-data-services/spark-as-a-service/">IBM's Spark-as-a-service</a> that enables a Bluemix user to integrate customer sales data with US Census demographic data, and in minutes perform common analyses that once took days or weeks to complete.</p>
+<p><strong>Simple Shopper Insights</strong> is about democratizing big data analytics with open data and cloud-based analytics. It's a <a href="http://jupyter.org/">Jupyter notebook</a> that runs best in <a href="http://www.ibm.com/analytics/us/en/technology/cloud-data-services/spark-as-a-service/">IBM's Spark-as-a-service</a> that enables a Bluemix user to integrate customer sales data with US Census demographic data, and in minutes perform common analyses that once took days or weeks to complete.</p>
 <p>This notebook goes through a complete analysis using sample data readily available on the web. But it also serves as a template for your own work with your own data. Just substitute the sample sales data with your own!</p>
 <p>Here are some of the insights produced in this notebook:</p>
 <ol>
@@ -272,79 +281,6 @@ Import libraries and connection information to connect to Swift Object Storage o
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">credentials</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">credentials</span><span class="p">[</span><span class="s">&#39;auth_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;https://identity.open.softlayer.com&#39;</span>
-<span class="n">credentials</span><span class="p">[</span><span class="s">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;OBJECTSTORE_USER_ID&#39;</span><span class="p">]</span>
-<span class="n">credentials</span><span class="p">[</span><span class="s">&#39;domain_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;OBJECTSTORE_DOMAIN_ID&#39;</span><span class="p">]</span>
-<span class="n">credentials</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;OBJECTSTORE_USERNAME&#39;</span><span class="p">]</span>
-<span class="n">credentials</span><span class="p">[</span><span class="s">&#39;password&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;OBJECTSTORE_PASSWORD&#39;</span><span class="p">]</span>
-<span class="n">credentials</span><span class="p">[</span><span class="s">&#39;container&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;OBJECTSTORE_CONTAINER&#39;</span><span class="p">]</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="ObjectStore-credentials">ObjectStore credentials<a class="anchor-link" href="#ObjectStore-credentials">&#182;</a></h3><p>My working environment is set up to get my ObjectStore credentials above from variables I've set at the operating system level. You may want to go a simpler route and just enter the values as strings above. And when you copy this notebook to the <a href="https://console.ng.bluemix.net/catalog/services/apache-spark/?cm_mmc=developerWorks-_-dWdevcenter-_-clouddataservices-_-lp">IBM Analytics for Apache Spark service</a>, embedding your credentials directly in the notebook is your only option. You can find your ObjectStore credentials by finding your instance of the ObjectStore service in Bluemix and clicking on the 'Service Credentials'.</p>
-<p><img src="https://raw.githubusercontent.com/ibm-cds-labs/open-data/master/samples/img/objectstore_creds.png" alt="ObjectStore credentials" title="ObjectStore credentials"></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># A function returning a StringIO object containing text file content from Object Storage.</span>
-
-<span class="k">def</span> <span class="nf">getFileContent</span><span class="p">(</span><span class="n">credentials</span><span class="p">):</span>
-    <span class="n">url1</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">credentials</span><span class="p">[</span><span class="s">&#39;auth_url&#39;</span><span class="p">],</span> <span class="s">&#39;/v3/auth/tokens&#39;</span><span class="p">])</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;auth&#39;</span><span class="p">:</span> 
-            <span class="p">{</span><span class="s">&#39;identity&#39;</span><span class="p">:</span> 
-             <span class="p">{</span><span class="s">&#39;methods&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;password&#39;</span><span class="p">],</span>
-              <span class="s">&#39;password&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s">&#39;user&#39;</span><span class="p">:</span> 
-                    <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">credentials</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">],</span>
-                     <span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">credentials</span><span class="p">[</span><span class="s">&#39;domain_id&#39;</span><span class="p">]},</span>
-                     <span class="s">&#39;password&#39;</span><span class="p">:</span> <span class="n">credentials</span><span class="p">[</span><span class="s">&#39;password&#39;</span><span class="p">]</span>
-                    <span class="p">}</span>
-               <span class="p">}</span>
-              <span class="p">}</span>
-             <span class="p">}</span>
-            <span class="p">}</span>
-    <span class="n">headers1</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">}</span>
-    <span class="n">resp1</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url1</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers1</span><span class="p">)</span>
-    <span class="n">resp1_body</span> <span class="o">=</span> <span class="n">resp1</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>    
-    <span class="k">for</span> <span class="n">e1</span> <span class="ow">in</span> <span class="n">resp1_body</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">][</span><span class="s">&#39;catalog&#39;</span><span class="p">]:</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">e1</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;object-store&#39;</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">e2</span> <span class="ow">in</span> <span class="n">e1</span><span class="p">[</span><span class="s">&#39;endpoints&#39;</span><span class="p">]:</span>
-                <span class="k">if</span><span class="p">(</span><span class="n">e2</span><span class="p">[</span><span class="s">&#39;interface&#39;</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;public&#39;</span><span class="p">):</span>
-                    <span class="n">url2</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">e2</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">],</span><span class="s">&#39;/&#39;</span><span class="p">,</span> 
-                                    <span class="n">credentials</span><span class="p">[</span><span class="s">&#39;container&#39;</span><span class="p">],</span> <span class="s">&#39;/&#39;</span><span class="p">,</span> 
-                                    <span class="n">credentials</span><span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">]])</span>
-    <span class="n">s_subject_token</span> <span class="o">=</span> <span class="n">resp1</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;x-subject-token&#39;</span><span class="p">]</span>
-    <span class="n">headers2</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;X-Auth-Token&#39;</span><span class="p">:</span> <span class="n">s_subject_token</span><span class="p">,</span> <span class="s">&#39;accept&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">}</span>
-    <span class="n">resp2</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url2</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers2</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">resp2</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -418,52 +354,16 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">#credentials[&#39;filename&#39;] = &#39;sci.csv&#39;</span>
-<span class="c">#raw_data = getFileContent(credentials)</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">census_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;http://opendata.mybluemix.net/uscensus/sci.csv.gz&#39;</span><span class="p">,</span>  <span class="n">compression</span><span class="o">=</span><span class="s">&#39;gzip&#39;</span><span class="p">,</span> 
+                        <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">,</span><span class="s">&#39;B19049e1&#39;</span><span class="p">,</span><span class="s">&#39;B01002e1&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;B15003e1&#39;</span><span class="p">,</span><span class="s">&#39;B15003e2&#39;</span><span class="p">,</span><span class="s">&#39;B15003e3&#39;</span><span class="p">,</span><span class="s">&#39;B15003e4&#39;</span><span class="p">,</span><span class="s">&#39;B15003e5&#39;</span><span class="p">,</span><span class="s">&#39;B15003e6&#39;</span><span class="p">,</span><span class="s">&#39;B15003e7&#39;</span><span class="p">,</span><span class="s">&#39;B15003e8&#39;</span><span class="p">,</span><span class="s">&#39;B15003e9&#39;</span><span class="p">,</span><span class="s">&#39;B15003e10&#39;</span><span class="p">,</span><span class="s">&#39;B15003e11&#39;</span><span class="p">,</span><span class="s">&#39;B15003e12&#39;</span><span class="p">,</span><span class="s">&#39;B15003e13&#39;</span><span class="p">,</span><span class="s">&#39;B15003e14&#39;</span><span class="p">,</span><span class="s">&#39;B15003e15&#39;</span><span class="p">,</span><span class="s">&#39;B15003e16&#39;</span><span class="p">,</span><span class="s">&#39;B15003e17&#39;</span><span class="p">,</span><span class="s">&#39;B15003e18&#39;</span><span class="p">,</span><span class="s">&#39;B15003e19&#39;</span><span class="p">,</span><span class="s">&#39;B15003e20&#39;</span><span class="p">,</span><span class="s">&#39;B15003e21&#39;</span><span class="p">,</span><span class="s">&#39;B15003e22&#39;</span><span class="p">,</span><span class="s">&#39;B15003e23&#39;</span><span class="p">,</span><span class="s">&#39;B15003e24&#39;</span><span class="p">,</span><span class="s">&#39;B15003e25&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;B02001e1&#39;</span><span class="p">,</span><span class="s">&#39;B02001e2&#39;</span><span class="p">,</span><span class="s">&#39;B02001e3&#39;</span><span class="p">,</span><span class="s">&#39;B02001e4&#39;</span><span class="p">,</span><span class="s">&#39;B02001e5&#39;</span><span class="p">,</span><span class="s">&#39;B02001e6&#39;</span><span class="p">,</span><span class="s">&#39;B02001e7&#39;</span><span class="p">,</span><span class="s">&#39;B02001e8&#39;</span><span class="p">,</span><span class="s">&#39;B03001e3&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">raw_data</span> <span class="o">=</span> <span class="s">&quot;/Users/rajrsingh/Desktop/csv/outfiles/sci.csv.gz&quot;</span>
-<span class="n">census_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">,</span><span class="s">&#39;B19049e1&#39;</span><span class="p">,</span><span class="s">&#39;B01002e1&#39;</span><span class="p">,</span>
-                                           <span class="s">&#39;B15003e1&#39;</span><span class="p">,</span><span class="s">&#39;B15003e2&#39;</span><span class="p">,</span><span class="s">&#39;B15003e3&#39;</span><span class="p">,</span><span class="s">&#39;B15003e4&#39;</span><span class="p">,</span><span class="s">&#39;B15003e5&#39;</span><span class="p">,</span><span class="s">&#39;B15003e6&#39;</span><span class="p">,</span><span class="s">&#39;B15003e7&#39;</span><span class="p">,</span><span class="s">&#39;B15003e8&#39;</span><span class="p">,</span><span class="s">&#39;B15003e9&#39;</span><span class="p">,</span><span class="s">&#39;B15003e10&#39;</span><span class="p">,</span><span class="s">&#39;B15003e11&#39;</span><span class="p">,</span><span class="s">&#39;B15003e12&#39;</span><span class="p">,</span><span class="s">&#39;B15003e13&#39;</span><span class="p">,</span><span class="s">&#39;B15003e14&#39;</span><span class="p">,</span><span class="s">&#39;B15003e15&#39;</span><span class="p">,</span><span class="s">&#39;B15003e16&#39;</span><span class="p">,</span><span class="s">&#39;B15003e17&#39;</span><span class="p">,</span><span class="s">&#39;B15003e18&#39;</span><span class="p">,</span><span class="s">&#39;B15003e19&#39;</span><span class="p">,</span><span class="s">&#39;B15003e20&#39;</span><span class="p">,</span><span class="s">&#39;B15003e21&#39;</span><span class="p">,</span><span class="s">&#39;B15003e22&#39;</span><span class="p">,</span><span class="s">&#39;B15003e23&#39;</span><span class="p">,</span><span class="s">&#39;B15003e24&#39;</span><span class="p">,</span><span class="s">&#39;B15003e25&#39;</span><span class="p">,</span>
-                                           <span class="s">&#39;B02001e1&#39;</span><span class="p">,</span><span class="s">&#39;B02001e2&#39;</span><span class="p">,</span><span class="s">&#39;B02001e3&#39;</span><span class="p">,</span><span class="s">&#39;B02001e4&#39;</span><span class="p">,</span><span class="s">&#39;B02001e5&#39;</span><span class="p">,</span><span class="s">&#39;B02001e6&#39;</span><span class="p">,</span><span class="s">&#39;B02001e7&#39;</span><span class="p">,</span><span class="s">&#39;B02001e8&#39;</span><span class="p">,</span><span class="s">&#39;B03001e3&#39;</span><span class="p">])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansired">---------------------------------------------------------------------------</span>
-<span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-5-b9bdafd3e69f&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
-<span class="ansigreen">      1</span> raw_data <span class="ansiblue">=</span> <span class="ansiblue">&quot;/Users/rajrsingh/Desktop/csv/outfiles/sci.csv.gz&quot;</span><span class="ansiblue"></span>
-<span class="ansigreen">----&gt; 2</span><span class="ansired"> census_df = pd.read_csv(raw_data, usecols=[&apos;GEOID&apos;,&apos;B19049e1&apos;,&apos;B01002e1&apos;,
-</span><span class="ansigreen">      3</span>                                            <span class="ansiblue">&apos;B15003e1&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e2&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e3&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e4&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e5&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e6&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e7&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e8&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e9&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e10&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e11&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e12&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e13&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e14&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e15&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e16&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e17&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e18&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e19&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e20&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e21&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e22&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e23&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e24&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B15003e25&apos;</span><span class="ansiblue">,</span><span class="ansiblue"></span>
-<span class="ansigreen">      4</span>                                            &apos;B02001e1&apos;,&apos;B02001e2&apos;,&apos;B02001e3&apos;,&apos;B02001e4&apos;,&apos;B02001e5&apos;,&apos;B02001e6&apos;,&apos;B02001e7&apos;,&apos;B02001e8&apos;,&apos;B03001e3&apos;])
-
-<span class="ansired">NameError</span>: name &apos;pd&apos; is not defined</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -480,7 +380,7 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">census_df</span><span class="p">[</span><span class="s">&#39;INCOME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">census_df</span><span class="p">[</span><span class="s">&#39;B19049e1&#39;</span><span class="p">]</span>
@@ -510,33 +410,10 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansired">---------------------------------------------------------------------------</span>
-<span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-6-b936b875e990&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
-<span class="ansigreen">----&gt; 1</span><span class="ansired"> </span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;INCOME&apos;</span><span class="ansiblue">]</span> <span class="ansiblue">=</span> census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B19049e1&apos;</span><span class="ansiblue">]</span><span class="ansiblue"></span>
-<span class="ansigreen">      2</span> census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;AGE&apos;</span><span class="ansiblue">]</span> <span class="ansiblue">=</span> census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B01002e1&apos;</span><span class="ansiblue">]</span><span class="ansiblue"></span>
-<span class="ansigreen">      3</span> census_df<span class="ansiblue">.</span>drop<span class="ansiblue">(</span><span class="ansiblue">[</span><span class="ansiblue">&apos;B19049e1&apos;</span><span class="ansiblue">,</span><span class="ansiblue">&apos;B01002e1&apos;</span><span class="ansiblue">]</span><span class="ansiblue">,</span>inplace<span class="ansiblue">=</span>True<span class="ansiblue">,</span>axis<span class="ansiblue">=</span><span class="ansicyan">1</span><span class="ansiblue">)</span><span class="ansiblue"></span>
-<span class="ansigreen">      4</span> <span class="ansiblue"></span>
-<span class="ansigreen">      5</span> census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;NOHSDIP&apos;</span><span class="ansiblue">]</span> <span class="ansiblue">=</span> <span class="ansiblue">(</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e2&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e3&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e4&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e5&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e6&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e7&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e8&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e9&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e10&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e11&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e12&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e13&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e14&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e15&apos;</span><span class="ansiblue">]</span><span class="ansiblue">+</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e16&apos;</span><span class="ansiblue">]</span><span class="ansiblue">)</span><span class="ansiblue">/</span>census_df<span class="ansiblue">[</span><span class="ansiblue">&apos;B15003e1&apos;</span><span class="ansiblue">]</span><span class="ansiblue"></span>
-
-<span class="ansired">NameError</span>: name &apos;census_df&apos; is not defined</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Compute national averages</span>
@@ -562,7 +439,7 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -609,7 +486,7 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">summary_df</span> <span class="o">=</span> <span class="n">census_df</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">])</span>
@@ -625,7 +502,7 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -783,7 +660,7 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">corr</span> <span class="o">=</span> <span class="n">census_df</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
@@ -1287,19 +1164,18 @@ IollRERERPRFEsuIiIiI6IsklhERERHRF0ksIyIiIqIv/j8teZseo/MrZwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">credentials</span><span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;SalesJan2009.csv&#39;</span>
-<span class="n">country</span> <span class="o">=</span> <span class="s">&#39;United States&#39;</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">country</span> <span class="o">=</span> <span class="s">&#39;United States&#39;</span>
 <span class="n">product</span> <span class="o">=</span> <span class="s">&#39;Product1&#39;</span>
 
 <span class="c"># import the CSV file</span>
 <span class="c">#raw_data = getFileContent(credentials)</span>
-<span class="n">raw_data</span> <span class="o">=</span> <span class="s">&quot;/Users/rajrsingh/Box Sync/CDS/Developer Advocacy/Open Data/sales2009/SalesJan2009.csv&quot;</span>
+<span class="n">raw_data</span> <span class="o">=</span> <span class="s">&quot;https://github.com/ibm-cds-labs/open-data/raw/master/salesjan2009/salesjan2009.csv.gz&quot;</span>
 
 <span class="c"># create a data frame with just the columns we need</span>
-<span class="n">sales_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;US Zip&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">},</span> 
+<span class="n">sales_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&#39;gzip&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;US Zip&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">},</span> 
                        <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Product&#39;</span><span class="p">,</span><span class="s">&#39;US Zip&#39;</span><span class="p">,</span><span class="s">&#39;Country&#39;</span><span class="p">])</span>
 
 <span class="c"># just get US sales for a single product</span>
@@ -1320,7 +1196,7 @@ IollRERERPRFEsuIiIiI6IsklhERERHRF0ksIyIiIqIv/j8teZseo/MrZwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">sales_counts</span> <span class="o">=</span> <span class="n">sales_df</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
@@ -1336,7 +1212,7 @@ IollRERERPRFEsuIiIiI6IsklhERERHRF0ksIyIiIqIv/j8teZseo/MrZwAAAABJRU5ErkJggg==
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -1370,7 +1246,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">saleszips</span> <span class="o">=</span> <span class="n">census_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sales_counts</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s">&#39;right&#39;</span><span class="p">)</span>
@@ -1386,7 +1262,7 @@ Name: Sales, dtype: float64</pre>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -1589,7 +1465,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># 25% threshold is 1, so select zips with sales &gt; 1</span>
@@ -1608,7 +1484,7 @@ Name: Sales, dtype: float64</pre>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[14]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -1775,7 +1651,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -1785,28 +1661,6 @@ Name: Sales, dtype: float64</pre>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansired">---------------------------------------------------------------------------</span>
-<span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-3-a6379185da53&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
-<span class="ansigreen">      1</span> get_ipython<span class="ansiblue">(</span><span class="ansiblue">)</span><span class="ansiblue">.</span>magic<span class="ansiblue">(</span><span class="ansiblue">u&apos;matplotlib inline&apos;</span><span class="ansiblue">)</span><span class="ansiblue"></span>
-<span class="ansigreen">----&gt; 2</span><span class="ansired"> </span>plt<span class="ansiblue">.</span>rcParams<span class="ansiblue">[</span><span class="ansiblue">&apos;figure.figsize&apos;</span><span class="ansiblue">]</span> <span class="ansiblue">=</span> <span class="ansiblue">(</span><span class="ansicyan">16</span><span class="ansiblue">,</span> <span class="ansicyan">8</span><span class="ansiblue">)</span><span class="ansiblue"></span>
-<span class="ansigreen">      3</span> highzipaxlabel <span class="ansiblue">=</span> <span class="ansiblue">&apos;# of zips - zips with high sales&apos;</span><span class="ansiblue"></span>
-<span class="ansigreen">      4</span> nationalaxlabel <span class="ansiblue">=</span> <span class="ansiblue">&apos;# of zips - nation&apos;</span><span class="ansiblue"></span>
-
-<span class="ansired">NameError</span>: name &apos;plt&apos; is not defined</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1822,7 +1676,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">## Income</span>
@@ -2143,7 +1997,7 @@ nExLkiRJktSmvwH3Nxsq/zpHQwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">## Age</span>
@@ -2466,7 +2320,7 @@ WVPtlzcAAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">## No H.S. diploma</span>
@@ -2810,7 +2664,7 @@ JEmSJM2Q/wFUzrvgtDK/fAAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">## Bachelors degree</span>
@@ -3132,7 +2986,7 @@ S5IkSZI0kM20JEmSJEkD2UxLkiRJkjSQzbQkSZIkSQP9B2GKgwCCeyX0AAAAAElFTkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">## White</span>
@@ -3463,7 +3317,7 @@ AAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">## Black</span>
@@ -3762,7 +3616,7 @@ RN8AAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">## Asian</span>
@@ -4078,7 +3932,7 @@ LrwlSZIkSarIhbckSZIkSRW58JYkSZIkqSIX3pIkSZIkVfQGyjZIlAOjHHUAAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">## Hispanic or Latino</span>
@@ -4433,7 +4287,7 @@ ERERiZEabxEREREREZEY/RdAd/kuEXBHXQAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">highsaleszips</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s">&#39;WHITE&#39;</span><span class="p">:</span><span class="s">&#39;ASIAN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Race in sales areas&#39;</span><span class="p">)</span>
@@ -4449,11 +4303,11 @@ ERERiZEabxEREREREZEY/RdAd/kuEXBHXQAAAABJRU5ErkJggg==
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[23]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[24]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.legend.Legend at 0x10fd8b710&gt;</pre>
+<pre>&lt;matplotlib.legend.Legend at 0x110da7450&gt;</pre>
 </div>
 
 </div>
@@ -4864,7 +4718,7 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Compare characteristics of the country as a whole to zip codes with sales</span>
@@ -4880,7 +4734,7 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[24]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[25]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -5031,8 +4885,8 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="summary"></a></p>
-<h3 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h3><h4 id="Incomes-are-much-higher">Incomes are much higher<a class="anchor-link" href="#Incomes-are-much-higher">&#182;</a></h4><p>Median household income overall is about $22,000 higher than the country as a whole, which is <strong>very</strong> significant as that represents a nearly 50% increase in income in these zip codes we sell to.</p>
-<h4 id="Education-is-greater">Education is greater<a class="anchor-link" href="#Education-is-greater">&#182;</a></h4><p>The percentage of people with high school diplomas but no college degree is almost 24% lower in our sales zips, and that is compensated by a much greater number of college grads (16% higher) and people with graduate degrees of some sort (12% higher).</p>
+<h3 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h3><h4 id="Incomes-are-much-higher">Incomes are much higher<a class="anchor-link" href="#Incomes-are-much-higher">&#182;</a></h4><p>Median household income overall is about $22,000 higher than the country as a whole, which is <strong>very</strong> significant as that represents a nearly 50\% increase in income in these zip codes we sell to.</p>
+<h4 id="Education-is-greater">Education is greater<a class="anchor-link" href="#Education-is-greater">&#182;</a></h4><p>The percentage of people with high school diplomas but no college degree is almost 24\% lower in our sales zips, and that is compensated by a much greater number of college grads (16\% higher) and people with graduate degrees of some sort (12\% higher).</p>
 <h4 id="People-are-a-little-younger">People are a little younger<a class="anchor-link" href="#People-are-a-little-younger">&#182;</a></h4><p>Males and females are about 3 1/2 years younger in our zip codes than in the country as a whole.</p>
 <h4 id="White-population-is-lower">White population is lower<a class="anchor-link" href="#White-population-is-lower">&#182;</a></h4><p>The white population is lower, and there is a corresponding higher number of other races.</p>
 
@@ -5052,7 +4906,7 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">censusgood_df</span> <span class="o">=</span> <span class="n">census_df</span> <span class="p">[</span>
@@ -5076,7 +4930,7 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[25]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[26]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -5275,7 +5129,7 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">censusgood_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -5289,7 +5143,7 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[26]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[27]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -5344,35 +5198,16 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="map"></a></p>
-<h2 id="Mapping-great-prospective-zip-codes-with-CartoDB">Mapping great prospective zip codes with CartoDB<a class="anchor-link" href="#Mapping-great-prospective-zip-codes-with-CartoDB">&#182;</a></h2><p>Having a list of zip codes is great, but it's extremely useful to be able to see the results on a map. This is the best way to do a 'reality check' and see if the results make sense. It's also interesting to survey the country in this way -- a birds-eye view of where your product is selling and where there's potential demand.</p>
-<p>Here we show an integration with a good friend of ours, CartoDB. CartoDB is a firm specializing in mapping-as-a-service. They use the excellent open source database, PostgreSQL and it's geospatial extension, PostGIS to power their service.</p>
-<p>What we need to do to dynamically create maps of our analytics results is:</p>
-<ol>
-<li>Manually import the raw census zip code boundaries into CartoDB's platform (with no demographic data attached to reduce the file size)</li>
-<li>Create a map in CartoDB of the zip code boundaries</li>
-<li>Add 2 empty tables to the map that represent zip codes with sales, and good potential zip codes</li>
-<li>When we run an analysis, populate those tables with the results of the analysis</li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Update-data-tables-in-CartoDB">Update data tables in CartoDB<a class="anchor-link" href="#Update-data-tables-in-CartoDB">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install --user cartodb
+<div class=" highlight hl-ipython2"><pre><span class="c">#!pip install --user cartodb</span>
 <span class="c"># Set up cartodb module for use</span>
 <span class="kn">from</span> <span class="nn">cartodb</span> <span class="kn">import</span> <span class="n">CartoDBAPIKey</span><span class="p">,</span> <span class="n">CartoDBException</span>
 <span class="n">API_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;CARTODB_APIKEY&#39;</span><span class="p">]</span>
@@ -5381,24 +5216,6 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Requirement already satisfied (use --upgrade to upgrade): cartodb in /Users/rajrsingh/anaconda/lib/python2.7/site-packages
-Requirement already satisfied (use --upgrade to upgrade): oauth2 in /Users/rajrsingh/anaconda/lib/python2.7/site-packages (from cartodb)
-Requirement already satisfied (use --upgrade to upgrade): httplib2 in /Users/rajrsingh/anaconda/lib/python2.7/site-packages (from oauth2-&gt;cartodb)
-<span class="ansiyellow">You are using pip version 7.1.2, however version 8.0.2 is available.
-You should consider upgrading via the &apos;pip install --upgrade pip&apos; command.</span>
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -5414,7 +5231,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># output good Census zips to a list</span>
@@ -5428,7 +5245,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
@@ -5442,7 +5259,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># update sales table</span>
@@ -5463,8 +5280,8 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 53, u&apos;time&apos;: 0.051}
-{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.253}
+<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 53, u&apos;time&apos;: 0.115}
+{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.386}
 </pre>
 </div>
 </div>
@@ -5484,7 +5301,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># output good Census zips to a list</span>
@@ -5498,7 +5315,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
@@ -5512,7 +5329,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">try</span><span class="p">:</span>
@@ -5533,7 +5350,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 38, u&apos;time&apos;: 0.007}
-{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.155}
+{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.179}
 </pre>
 </div>
 </div>
@@ -5553,7 +5370,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="nx">javascript</span>
@@ -5578,7 +5395,7 @@ You should consider upgrading via the &apos;pip install --upgrade pip&apos; comm
     <span class="c1">//layers[1].on(&#39;featureOver&#39;, function(e, latlng, pos, data) {</span>
     <span class="c1">//  cartodb.log.log(e, latlng, pos, data);</span>
     <span class="c1">//});</span>
-    <span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="nx">vis</span><span class="p">.</span><span class="nx">getNativeMap</span><span class="p">();</span> <span class="c1">// get the native map to work with it</span>
+    <span class="c1">//var map = vis.getNativeMap(); // get the native map to work with it</span>
   <span class="p">})</span>
   <span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
@@ -5622,7 +5439,7 @@ var main = function() {
     //layers[1].on('featureOver', function(e, latlng, pos, data) {
     //  cartodb.log.log(e, latlng, pos, data);
     //});
-    var map = vis.getNativeMap(); // get the native map to work with it
+    //var map = vis.getNativeMap(); // get the native map to work with it
   })
   .error(function(err) {
     console.log(err);
@@ -5647,19 +5464,6 @@ require(['cartodblib'], main);
 <h2 id="The-end">The end<a class="anchor-link" href="#The-end">&#182;</a></h2>
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
     </div>
   </div>
