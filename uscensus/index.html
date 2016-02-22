@@ -1,93 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>CDS open data | US Census ACS 2013</title>
+<!doctype html>
+<!--
+  Instructions:
+  - Save this file.
+  - Replace "USER" with your GitHub username.
+  - Replace "REPO" with your GitHub repo name.
+  - Replace "Your Project" with your project name.
+  - Upload this file (or commit to GitHub Pages).
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link href="../css/jumbotron-narrow.css" rel="stylesheet">
+  Customize as you see fit!
+-->
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width">
 
-    <!-- custom styles -->
-    <style>
-      body, html, p {
-        color: #44565E;
-      }
-      .jumbotron {
-        background-color: #BECAE0;
-      }
-    </style>
-  </head>
-<body>
-  <div class="container">
-      <div class="header clearfix">
-          <nav>
-              <ul class="nav nav-pills pull-right">
-                  <li role="presentation" class="active"><a href="..">CDS Open Data Home</a></li>
-                  <li role="presentation"><a href="../README.md">About</a></li>
-                  <li role="presentation"><a href="../README.md">Contact</a></li>
-              </ul>
-          </nav>
-          <h3 class="text-muted">US Census 2013</h3>
-      </div>
+  <title>CDS Open Data</title>
 
-      <div class="jumbotron">
-        <h1>US Census 2013</h1>
-        <p class="lead">US Census data from the 2013 American Community Survey aggregated to the zip code level.</p>
-      </div>
-    
-    <div class="row marketing">
-      <div class="col-lg-12">
-        <h4>About the ACS</h4>
-        <p>The American Community Survey (ACS) is an ongoing survey that provides vital information on a yearly basis about our nation and its people. Information from the survey generates data that help determine how more than $400 billion in federal and state funds are distributed each year.</p>
-        <p>Through the ACS, we know more about jobs and occupations, educational attainment, veterans, whether people own or rent their home, and other topics. Public officials, planners, and entrepreneurs use this information to assess the past and plan the future.</p>
-        
-        <h4>Files</h4>
-        The data are broken up into separate CSV files organized by theme to make usage more manageable. 
-        <ul>
-          <li><a href="https://ibm.box.com/shared/static/mjveug5td8t9wvg4gtkfs53sqqav9bmc.gz">x00_pop_housing_counts.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/s7wl7vpyll893lh7txkfa2ahw62114ya.gz">x01_age_sex.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/t4vujbygnjwzcxanj7f6q5xevksfhk31.gz">x02_race.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/qomu4hn304hzbvp5xgrg1nlbmz4wf8cw.gz">x03_hispanic_or_latino.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/q7foa91lp7hbcr4d2f5v2199pe46wvd3.gz">x04_ancestry.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/fviybhhke98robylysul7w86478qjzol.gz">x05_foreign_born_citizenship.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/jn29gaotgdbut8fa39tf7er3kvy55fuw.gz">x06_place_of_birth.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/09e2c8q93nyinu9egh28fqmn4x5iwmbt.gz">x07_migration.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/regvmcdui8g1hmgltxpv6orcfnvucipu.gz">x08_commuting.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/lc0wei388a5zrwkenxz2ad4l08vx9wcq.gz">x09_children_household_relationship.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/aogx9t38np9jbk4aj0rlftqsu81j5crv.gz">x10_grandparents_grandchildren.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/vr2foorzn5at209bg0vjkgv9hsra40sc.gz">x11_household_family_subfamilies.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/s5xq1hkiuz353niwqq6hyo9cgozl3cy9.gz">x12_marital_status_history.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/fzdn9k7klv3d0d23ditgdkscf8eczp6v.gz">x13_fertility.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/ya2ecp5otd53whshs40h5ckbxyv7qnys.gz">x14_school_enrollment.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/u0les6fzkbm7tb19j2322bzehflrkdgb.gz">x15_education.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/qlavdo4cdx1q6w64zzsky8hgobh1592e.gz">x16_language_spoken_at_home.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/k6yageqhgksmxg4i9q4jc7z8rsgr2kz3.gz">x17_poverty.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/fidowsr9d2dt7sy2m8ze8rx86w32uyuv.gz">x18_disability.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/17hqsx54d00u6z4n03le37qqynx3gk01.gz">x19_income.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/86w8r9wca23jeyj4zp7e1d49oozhri2l.gz">x20_earnings.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/9hvs25bk25u53esolvygbetdzx3q0pii.gz">x21_veteran_status.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/73il0xbur1peqa3x6aauru3mrzyqdaly.gz">x22_food_stamps.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/jfz5eeb8pwz6hwpvbl0d57fiahuxne83.gz">x23_employment_status.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/ee24i17nbm2rj3unuzgyvd8qxpit52u1.gz">x24_industry_occupation.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/0wjmfiw0oc0typlupf38vukrtnurpk6x.gz">x25_housing_characteristics.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/zhl7dn74ypmuhthuzpst3noakxecjf31.gz">x26_group_quarters.csv.gz</a></li>
-          <li><a href="https://ibm.box.com/shared/static/7ius8lxzxomqlikiv7n67qgtsmmgxfn6.gz">x27_health_insurance.csv.gz</a></li>
-        </ul>
-      
-        <h4>Technical Details</h4>
-        <p>Get Field Descriptions from <a href="fields_all.csv">this file.</a></p>
-      
-        <h4>Terms of Use</h4>
-        <p><a href="https://www.usa.gov/government-works" target="usgov">U.S. Government Works</a></p>
-        
-      </div>
+  <!-- Flatdoc -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/legacy.js'></script>
+  <script src='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/flatdoc.js'></script>
+
+  <!-- Flatdoc theme -->
+  <link  href='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/theme-white/style.css' rel='stylesheet'>
+  <script src='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/theme-white/script.js'></script>
+
+  <!-- Meta -->
+  <meta content="CDS Open Data" property="og:title">
+  <meta content="CDS Open Data" name="description">
+
+  <!-- Initializer -->
+  <script>
+    Flatdoc.run({
+      fetcher: Flatdoc.file('README.md');
+    });
+  </script>
+</head>
+<body role='flatdoc'>
+
+  <div class='header'>
+    <div class='left'>
+      <h1>CDS Open Data</h1>
+      <ul>
+        <li><a href='https://github.com/ibm-cds-labs/open-data'>View on GitHub</a></li>
+        <li><a href='https://github.com/ibm-cds-labs/open-data/issues'>Issues</a></li>
+      </ul>
     </div>
+    <div class='right'>
+      <!-- GitHub buttons: see http://ghbtns.com -->
+      <iframe src="http://ghbtns.com/github-btn.html?user=ibm-cds-labs&amp;repo=open-data&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+    </div>
+  </div>
 
-  </body>
+  <div class='content-root'>
+    <div class='menubar'>
+      <div class='menu section' role='flatdoc-menu'></div>
+    </div>
+    <div role='flatdoc-content' class='content'></div>
+  </div>
+
+</body>
 </html>
-
-
