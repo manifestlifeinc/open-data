@@ -210,7 +210,6 @@ div#notebook {
 <li><a href="#censusdata">Census Data</a><ul>
 <li><a href="#censusdatadesc">Census data description</a></li>
 <li><a href="#censusdataimport">Import</a></li>
-<li><a href="#censusdatastats">Descriptive statistics</a></li>
 </ul>
 </li>
 <li><a href="#salesdata">Sales data</a><ul>
@@ -218,14 +217,16 @@ div#notebook {
 <li><a href="#salesdatamerge">Merge with Census</a></li>
 </ul>
 </li>
-<li><a href="#insights">Insights</a><ul>
-<li><a href="#viz">Visualization</a></li>
-<li><a href="#summary">Summary</a></li>
-</ul>
-</li>
+<li><a href="#insights">Insights</a></li>
 <li><a href="#zipfind">Finding high potential zip codes</a></li>
 <li><a href="#targetregions">Target zip codes</a></li>
 <li><a href="#map">Mapping</a></li>
+<li>Appendices<ul>
+<li><a href="#summarystats">Appendix A: Summary statistics for Census data</a></li>
+<li><a href="#correlation">Appendix B: Examining correlation</a></li>
+<li><a href="#viz">Appendix C: Visualizing Customer Demograpics vs. the Nation</a></li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -479,14 +480,510 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="censusdatastats"></a></p>
-<h3 id="Descriptive-statistics-for-Census-data">Descriptive statistics for Census data<a class="anchor-link" href="#Descriptive-statistics-for-Census-data">&#182;</a></h3><h4 id="Summary-statistics">Summary statistics<a class="anchor-link" href="#Summary-statistics">&#182;</a></h4>
+<p><a id="salesdata"></a></p>
+<h2 id="Sales-data">Sales data<a class="anchor-link" href="#Sales-data">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="salesdataimport"></a></p>
+<h3 id="Import-sample-sales-data-set">Import sample sales data set<a class="anchor-link" href="#Import-sample-sales-data-set">&#182;</a></h3><p>Here we bring in a relatively small sample sales data set. There are only about 400 U.S. sales for the product we are interested in -- "Product1". But this is good enough to illustrate the analysis.</p>
+<p>If you were to do this yourself with your own sales data, your data should organized as follows:</p>
+<ol>
+<li>there should be sales in the U.S. (since we're analyzing it against U.S. Census data)</li>
+<li>each row should represent a unique sale</li>
+<li>the data set should contain columns for zip code, price, product ID and Country name</li>
+<li>the data set should be in a CSV text file format</li>
+</ol>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">country</span> <span class="o">=</span> <span class="s">&#39;United States&#39;</span>
+<span class="n">product</span> <span class="o">=</span> <span class="s">&#39;Product1&#39;</span>
+
+<span class="c"># import the CSV file</span>
+<span class="c">#raw_data = getFileContent(credentials)</span>
+<span class="n">raw_data</span> <span class="o">=</span> <span class="s">&quot;https://github.com/ibm-cds-labs/open-data/raw/master/salesjan2009/salesjan2009.csv.gz&quot;</span>
+
+<span class="c"># create a data frame with just the columns we need</span>
+<span class="n">sales_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&#39;gzip&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;US Zip&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">},</span> 
+                       <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Product&#39;</span><span class="p">,</span><span class="s">&#39;US Zip&#39;</span><span class="p">,</span><span class="s">&#39;Country&#39;</span><span class="p">])</span>
+
+<span class="c"># just get US sales for a single product</span>
+<span class="n">sales_df</span> <span class="o">=</span> <span class="n">sales_df</span><span class="p">[</span> <span class="p">(</span><span class="n">sales_df</span><span class="o">.</span><span class="n">Product</span> <span class="o">==</span> <span class="n">product</span><span class="p">)</span> 
+                      <span class="o">&amp;</span> <span class="p">(</span><span class="n">sales_df</span><span class="o">.</span><span class="n">Country</span> <span class="o">==</span> <span class="n">country</span><span class="p">)]</span>
+
+<span class="c"># make the zip code format match the zip code format in the census data</span>
+<span class="n">sales_df</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;86000US&quot;</span> <span class="o">+</span> <span class="n">sales_df</span><span class="p">[</span><span class="s">&#39;US Zip&#39;</span><span class="p">]</span>
+
+<span class="c"># drop columns we don&#39;t need anymore</span>
+<span class="n">sales_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">&#39;Product&#39;</span><span class="p">,</span><span class="s">&#39;Country&#39;</span><span class="p">,</span><span class="s">&#39;US Zip&#39;</span><span class="p">],</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">sales_counts</span> <span class="o">=</span> <span class="n">sales_df</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">sales_counts</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Sales&#39;</span>
+<span class="n">sales_counts</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count    306.000000
+mean       1.307190
+std        0.866733
+min        1.000000
+25%        1.000000
+50%        1.000000
+75%        1.000000
+max        9.000000
+Name: Sales, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="salesdatamerge"></a></p>
+<h3 id="Merge-sales-to-Census">Merge sales to Census<a class="anchor-link" href="#Merge-sales-to-Census">&#182;</a></h3><p><a href="#toc">back to top</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">saleszips</span> <span class="o">=</span> <span class="n">census_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sales_counts</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s">&#39;right&#39;</span><span class="p">)</span>
+<span class="n">saleszips</span><span class="p">[</span><span class="s">&#39;Zip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">saleszips</span><span class="o">.</span><span class="n">index</span>
+<span class="n">saleszips</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>INCOME</th>
+      <th>AGE</th>
+      <th>NOHSDIP</th>
+      <th>HSDIPSOMECOL</th>
+      <th>BA</th>
+      <th>GRAD</th>
+      <th>POPULATION</th>
+      <th>WHITE</th>
+      <th>BLACK</th>
+      <th>NATAMER</th>
+      <th>ASIAN</th>
+      <th>PACISL</th>
+      <th>OTHERRACE</th>
+      <th>MULTIRACE</th>
+      <th>HISPLAT</th>
+      <th>Sales</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>305.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>304.000000</td>
+      <td>306.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>76178.167763</td>
+      <td>39.015132</td>
+      <td>0.100072</td>
+      <td>0.472995</td>
+      <td>0.246166</td>
+      <td>0.180768</td>
+      <td>17508.301639</td>
+      <td>0.760876</td>
+      <td>0.093561</td>
+      <td>0.005064</td>
+      <td>0.072316</td>
+      <td>0.002496</td>
+      <td>0.036198</td>
+      <td>0.029490</td>
+      <td>0.134404</td>
+      <td>1.307190</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>36094.736528</td>
+      <td>6.057036</td>
+      <td>0.083413</td>
+      <td>0.148536</td>
+      <td>0.093341</td>
+      <td>0.115888</td>
+      <td>11111.128358</td>
+      <td>0.193980</td>
+      <td>0.144929</td>
+      <td>0.012988</td>
+      <td>0.090579</td>
+      <td>0.011741</td>
+      <td>0.056148</td>
+      <td>0.031175</td>
+      <td>0.151961</td>
+      <td>0.866733</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>16069.000000</td>
+      <td>21.800000</td>
+      <td>0.000000</td>
+      <td>0.040559</td>
+      <td>0.000000</td>
+      <td>0.010708</td>
+      <td>0.000000</td>
+      <td>0.095601</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>40%</th>
+      <td>62186.000000</td>
+      <td>37.400000</td>
+      <td>0.058791</td>
+      <td>0.436068</td>
+      <td>0.220465</td>
+      <td>0.124059</td>
+      <td>13572.800000</td>
+      <td>0.783673</td>
+      <td>0.025167</td>
+      <td>0.001416</td>
+      <td>0.027078</td>
+      <td>0.000000</td>
+      <td>0.011289</td>
+      <td>0.020066</td>
+      <td>0.060033</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>69855.500000</td>
+      <td>38.650000</td>
+      <td>0.074362</td>
+      <td>0.478094</td>
+      <td>0.247006</td>
+      <td>0.159859</td>
+      <td>16488.000000</td>
+      <td>0.819666</td>
+      <td>0.035619</td>
+      <td>0.002246</td>
+      <td>0.038763</td>
+      <td>0.000000</td>
+      <td>0.015675</td>
+      <td>0.023534</td>
+      <td>0.076052</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>60%</th>
+      <td>79873.600000</td>
+      <td>40.600000</td>
+      <td>0.092572</td>
+      <td>0.531858</td>
+      <td>0.279242</td>
+      <td>0.192510</td>
+      <td>19351.800000</td>
+      <td>0.857119</td>
+      <td>0.054711</td>
+      <td>0.002938</td>
+      <td>0.056001</td>
+      <td>0.000132</td>
+      <td>0.022228</td>
+      <td>0.027695</td>
+      <td>0.104562</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>216037.000000</td>
+      <td>68.300000</td>
+      <td>0.553417</td>
+      <td>0.769231</td>
+      <td>0.440627</td>
+      <td>0.656643</td>
+      <td>65117.000000</td>
+      <td>0.994135</td>
+      <td>0.767693</td>
+      <td>0.136069</td>
+      <td>0.488290</td>
+      <td>0.115780</td>
+      <td>0.385442</td>
+      <td>0.271421</td>
+      <td>0.887213</td>
+      <td>9.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Identify-sales-zips-with-strongest-correlation-to-customers">Identify sales zips with strongest correlation to customers<a class="anchor-link" href="#Identify-sales-zips-with-strongest-correlation-to-customers">&#182;</a></h3><p><a href="#toc">back to top</a></p>
+<p>e.g. zips with at least 2 sales - or the top 75% of zips with sales</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># 25% threshold is 1, so select zips with sales &gt; 1</span>
+<span class="n">highsaleszips</span> <span class="o">=</span> <span class="n">saleszips</span><span class="p">[</span> <span class="p">(</span> <span class="n">saleszips</span><span class="o">.</span><span class="n">Sales</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="n">highsaleszipssum_df</span> <span class="o">=</span> <span class="n">highsaleszips</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="o">.</span><span class="mi">40</span><span class="p">,</span><span class="o">.</span><span class="mi">50</span><span class="p">,</span><span class="o">.</span><span class="mi">60</span><span class="p">])</span>
+<span class="n">highsaleszipssum_df</span> <span class="o">=</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">index</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">&#39;Sales&#39;</span><span class="p">],</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">highsaleszipssum_df</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>INCOME</th>
+      <th>AGE</th>
+      <th>NOHSDIP</th>
+      <th>HSDIPSOMECOL</th>
+      <th>BA</th>
+      <th>GRAD</th>
+      <th>POPULATION</th>
+      <th>WHITE</th>
+      <th>BLACK</th>
+      <th>NATAMER</th>
+      <th>ASIAN</th>
+      <th>PACISL</th>
+      <th>OTHERRACE</th>
+      <th>MULTIRACE</th>
+      <th>HISPLAT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mean</th>
+      <td>76031.980769</td>
+      <td>37.85</td>
+      <td>0.116458</td>
+      <td>0.416471</td>
+      <td>0.261879</td>
+      <td>0.205191</td>
+      <td>17283.132075</td>
+      <td>0.699061</td>
+      <td>0.123149</td>
+      <td>0.006745</td>
+      <td>0.089312</td>
+      <td>0.003743</td>
+      <td>0.045753</td>
+      <td>0.032236</td>
+      <td>0.171723</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>22401.000000</td>
+      <td>29.90</td>
+      <td>0.000000</td>
+      <td>0.040559</td>
+      <td>0.000000</td>
+      <td>0.016456</td>
+      <td>0.000000</td>
+      <td>0.095601</td>
+      <td>0.003826</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>40%</th>
+      <td>56963.600000</td>
+      <td>35.58</td>
+      <td>0.064051</td>
+      <td>0.396659</td>
+      <td>0.239548</td>
+      <td>0.156830</td>
+      <td>12456.400000</td>
+      <td>0.725771</td>
+      <td>0.055825</td>
+      <td>0.001435</td>
+      <td>0.037337</td>
+      <td>0.000000</td>
+      <td>0.018347</td>
+      <td>0.021595</td>
+      <td>0.077678</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>69728.500000</td>
+      <td>37.80</td>
+      <td>0.077361</td>
+      <td>0.424456</td>
+      <td>0.274037</td>
+      <td>0.178124</td>
+      <td>16354.000000</td>
+      <td>0.766824</td>
+      <td>0.080367</td>
+      <td>0.002208</td>
+      <td>0.054002</td>
+      <td>0.000000</td>
+      <td>0.021491</td>
+      <td>0.027897</td>
+      <td>0.104359</td>
+    </tr>
+    <tr>
+      <th>60%</th>
+      <td>81812.000000</td>
+      <td>39.26</td>
+      <td>0.097105</td>
+      <td>0.450315</td>
+      <td>0.307510</td>
+      <td>0.209332</td>
+      <td>18323.800000</td>
+      <td>0.796342</td>
+      <td>0.101325</td>
+      <td>0.002779</td>
+      <td>0.072390</td>
+      <td>0.000265</td>
+      <td>0.025422</td>
+      <td>0.030893</td>
+      <td>0.123695</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>216037.000000</td>
+      <td>55.60</td>
+      <td>0.417073</td>
+      <td>0.769231</td>
+      <td>0.440627</td>
+      <td>0.656643</td>
+      <td>65117.000000</td>
+      <td>0.989341</td>
+      <td>0.760590</td>
+      <td>0.136069</td>
+      <td>0.488290</td>
+      <td>0.104259</td>
+      <td>0.384390</td>
+      <td>0.191157</td>
+      <td>0.887213</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="insights"></a></p>
+<h2 id="Insights">Insights<a class="anchor-link" href="#Insights">&#182;</a></h2><p>Let's create a table that shows the difference between the country as a whole versus zip codes with sales. This allows us to easily identify the major characteristics that define our customer base.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">summary_df</span> <span class="o">=</span> <span class="n">census_df</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">])</span>
@@ -502,7 +999,7 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -647,12 +1144,770 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">salesdiff_df</span> <span class="o">=</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">summary_df</span><span class="p">)</span>
+<span class="n">salesdiff_df</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>INCOME</th>
+      <th>AGE</th>
+      <th>NOHSDIP</th>
+      <th>HSDIPSOMECOL</th>
+      <th>BA</th>
+      <th>GRAD</th>
+      <th>POPULATION</th>
+      <th>WHITE</th>
+      <th>BLACK</th>
+      <th>NATAMER</th>
+      <th>ASIAN</th>
+      <th>PACISL</th>
+      <th>OTHERRACE</th>
+      <th>MULTIRACE</th>
+      <th>HISPLAT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mean</th>
+      <td>23919.394907</td>
+      <td>-3.645351</td>
+      <td>-0.026523</td>
+      <td>-0.219417</td>
+      <td>0.120134</td>
+      <td>0.125806</td>
+      <td>11021.063841</td>
+      <td>-0.142454</td>
+      <td>0.046738</td>
+      <td>-0.010821</td>
+      <td>0.069549</td>
+      <td>0.002680</td>
+      <td>0.023970</td>
+      <td>0.010337</td>
+      <td>0.086894</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>19902.000000</td>
+      <td>25.900000</td>
+      <td>0.000000</td>
+      <td>0.040559</td>
+      <td>0.000000</td>
+      <td>0.016456</td>
+      <td>0.000000</td>
+      <td>0.095601</td>
+      <td>0.003826</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>40%</th>
+      <td>13099.600000</td>
+      <td>-3.820000</td>
+      <td>-0.034500</td>
+      <td>-0.233226</td>
+      <td>0.137569</td>
+      <td>0.112301</td>
+      <td>11335.400000</td>
+      <td>-0.162916</td>
+      <td>0.052802</td>
+      <td>0.001435</td>
+      <td>0.037337</td>
+      <td>0.000000</td>
+      <td>0.018347</td>
+      <td>0.011962</td>
+      <td>0.061422</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>21950.500000</td>
+      <td>-3.300000</td>
+      <td>-0.041458</td>
+      <td>-0.233619</td>
+      <td>0.153049</td>
+      <td>0.123076</td>
+      <td>14469.000000</td>
+      <td>-0.162181</td>
+      <td>0.071687</td>
+      <td>0.001277</td>
+      <td>0.051482</td>
+      <td>0.000000</td>
+      <td>0.018878</td>
+      <td>0.013903</td>
+      <td>0.078132</td>
+    </tr>
+    <tr>
+      <th>60%</th>
+      <td>29781.000000</td>
+      <td>-3.640000</td>
+      <td>-0.045903</td>
+      <td>-0.233622</td>
+      <td>0.164821</td>
+      <td>0.141581</td>
+      <td>14986.000000</td>
+      <td>-0.157968</td>
+      <td>0.082226</td>
+      <td>0.000542</td>
+      <td>0.066553</td>
+      <td>0.000265</td>
+      <td>0.019091</td>
+      <td>0.012111</td>
+      <td>0.083207</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>-33964.000000</td>
+      <td>-35.900000</td>
+      <td>-0.582927</td>
+      <td>-0.230769</td>
+      <td>-0.559373</td>
+      <td>-0.343357</td>
+      <td>-8052.000000</td>
+      <td>-0.010659</td>
+      <td>-0.239410</td>
+      <td>-0.863931</td>
+      <td>-0.511710</td>
+      <td>-0.505829</td>
+      <td>-0.615610</td>
+      <td>-0.808843</td>
+      <td>-0.112787</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Examining-correlation">Examining correlation<a class="anchor-link" href="#Examining-correlation">&#182;</a></h4><p>In this section, we take a quick look at the correlation coefficients of many of our variables of interest to make sure it's worth looking at each one separately. This function computes the <a href="https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient">Pearson product-moment correlation coefficient</a>, which looks at two variables and computes a number between -1 and 1, where -1 is perfect negative correlation, 1 is perfect positive correlation, and 0 is no correlation.</p>
+<p><a id="summary"></a></p>
+<h3 id="Here's-what-this-table-shows-us.">Here's what this table shows us.<a class="anchor-link" href="#Here's-what-this-table-shows-us.">&#182;</a></h3><h4 id="Incomes-are-much-higher">Incomes are much higher<a class="anchor-link" href="#Incomes-are-much-higher">&#182;</a></h4><p>Median household income overall is about $22,000 higher than the country as a whole, which is <strong>very</strong> significant as that represents a nearly 50\% increase in income in these zip codes we sell to.</p>
+<h4 id="Education-is-greater">Education is greater<a class="anchor-link" href="#Education-is-greater">&#182;</a></h4><p>The percentage of people with high school diplomas but no college degree is almost 24\% lower in our sales zips, and that is compensated by a much greater number of college grads (16\% higher) and people with graduate degrees of some sort (12\% higher).</p>
+<h4 id="People-are-a-little-younger">People are a little younger<a class="anchor-link" href="#People-are-a-little-younger">&#182;</a></h4><p>Males and females are about 3 1/2 years younger in our zip codes than in the country as a whole.</p>
+<h4 id="White-population-is-lower">White population is lower<a class="anchor-link" href="#White-population-is-lower">&#182;</a></h4><p>The white population is lower, and there is a corresponding higher number of other races.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="zipfind"></a></p>
+<h2 id="Finding-high-potential-zip-codes">Finding high potential zip codes<a class="anchor-link" href="#Finding-high-potential-zip-codes">&#182;</a></h2><p>Here we take the variables we found to best explain the population of sales areas, and we look for other zip codes whose demographic characteristics for those variables are within 10 percentage points of the median.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">censusgood_df</span> <span class="o">=</span> <span class="n">census_df</span> <span class="p">[</span>
+    <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">INCOME</span> <span class="o">&gt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;40%&#39;</span><span class="p">,</span><span class="s">&#39;INCOME&#39;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">INCOME</span> <span class="o">&lt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;60%&#39;</span><span class="p">,</span><span class="s">&#39;INCOME&#39;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">AGE</span> <span class="o">&gt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;40%&#39;</span><span class="p">,</span><span class="s">&#39;AGE&#39;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">AGE</span> <span class="o">&lt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;60%&#39;</span><span class="p">,</span><span class="s">&#39;AGE&#39;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">BA</span> <span class="o">&gt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;40%&#39;</span><span class="p">,</span><span class="s">&#39;BA&#39;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">BA</span> <span class="o">&lt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;60%&#39;</span><span class="p">,</span><span class="s">&#39;BA&#39;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">WHITE</span> <span class="o">&gt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;40%&#39;</span><span class="p">,</span><span class="s">&#39;WHITE&#39;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">WHITE</span> <span class="o">&lt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;60%&#39;</span><span class="p">,</span><span class="s">&#39;WHITE&#39;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="p">]</span>
+<span class="n">censusgood_df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>INCOME</th>
+      <th>AGE</th>
+      <th>NOHSDIP</th>
+      <th>HSDIPSOMECOL</th>
+      <th>BA</th>
+      <th>GRAD</th>
+      <th>POPULATION</th>
+      <th>WHITE</th>
+      <th>BLACK</th>
+      <th>NATAMER</th>
+      <th>ASIAN</th>
+      <th>PACISL</th>
+      <th>OTHERRACE</th>
+      <th>MULTIRACE</th>
+      <th>HISPLAT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+      <td>38.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>70446.605263</td>
+      <td>37.463158</td>
+      <td>0.075874</td>
+      <td>0.480398</td>
+      <td>0.270187</td>
+      <td>0.173540</td>
+      <td>23031.210526</td>
+      <td>0.768633</td>
+      <td>0.085920</td>
+      <td>0.005015</td>
+      <td>0.076523</td>
+      <td>0.000892</td>
+      <td>0.034307</td>
+      <td>0.028710</td>
+      <td>0.129219</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>6742.784887</td>
+      <td>1.088371</td>
+      <td>0.040426</td>
+      <td>0.071450</td>
+      <td>0.021725</td>
+      <td>0.067237</td>
+      <td>9070.647905</td>
+      <td>0.016332</td>
+      <td>0.053489</td>
+      <td>0.006879</td>
+      <td>0.045081</td>
+      <td>0.001449</td>
+      <td>0.033679</td>
+      <td>0.013181</td>
+      <td>0.103808</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>56989.000000</td>
+      <td>35.600000</td>
+      <td>0.026752</td>
+      <td>0.284136</td>
+      <td>0.240809</td>
+      <td>0.095628</td>
+      <td>8661.000000</td>
+      <td>0.734561</td>
+      <td>0.004204</td>
+      <td>0.000000</td>
+      <td>0.010085</td>
+      <td>0.000000</td>
+      <td>0.001946</td>
+      <td>0.005835</td>
+      <td>0.003232</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>65683.000000</td>
+      <td>36.700000</td>
+      <td>0.054869</td>
+      <td>0.445958</td>
+      <td>0.252169</td>
+      <td>0.134817</td>
+      <td>17189.000000</td>
+      <td>0.758709</td>
+      <td>0.031806</td>
+      <td>0.001363</td>
+      <td>0.035986</td>
+      <td>0.000000</td>
+      <td>0.012179</td>
+      <td>0.021300</td>
+      <td>0.044803</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>71264.500000</td>
+      <td>37.500000</td>
+      <td>0.059818</td>
+      <td>0.495970</td>
+      <td>0.266366</td>
+      <td>0.152044</td>
+      <td>22907.500000</td>
+      <td>0.769553</td>
+      <td>0.081308</td>
+      <td>0.002594</td>
+      <td>0.069844</td>
+      <td>0.000169</td>
+      <td>0.026639</td>
+      <td>0.023845</td>
+      <td>0.103528</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>75855.750000</td>
+      <td>38.275000</td>
+      <td>0.083850</td>
+      <td>0.521748</td>
+      <td>0.288145</td>
+      <td>0.188011</td>
+      <td>27507.250000</td>
+      <td>0.782585</td>
+      <td>0.139436</td>
+      <td>0.005690</td>
+      <td>0.114887</td>
+      <td>0.001007</td>
+      <td>0.040903</td>
+      <td>0.034961</td>
+      <td>0.182670</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>81570.000000</td>
+      <td>39.200000</td>
+      <td>0.230875</td>
+      <td>0.591778</td>
+      <td>0.307421</td>
+      <td>0.399583</td>
+      <td>52815.000000</td>
+      <td>0.795636</td>
+      <td>0.194423</td>
+      <td>0.030930</td>
+      <td>0.174340</td>
+      <td>0.005354</td>
+      <td>0.166911</td>
+      <td>0.056916</td>
+      <td>0.400737</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="targetregions"></a></p>
+<h3 id="Target-regions">Target regions<a class="anchor-link" href="#Target-regions">&#182;</a></h3><p>Here we list the matching zip codes. From this point you could use this list in a variety of ways. Here are some ideas:</p>
+<ul>
+<li>Guidance for where to spend marketing dollars</li>
+<li>Filter existing direct mail lists to target those most likely to buy</li>
+<li>Guidance on where to build retail outlets, or if you're a wholesaler, where you want to get your products retailed.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">censusgood_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&apos;86000US06119&apos;,
+ &apos;86000US07012&apos;,
+ &apos;86000US11209&apos;,
+ &apos;86000US15220&apos;,
+ &apos;86000US21209&apos;,
+ &apos;86000US27511&apos;,
+ &apos;86000US28075&apos;,
+ &apos;86000US29414&apos;,
+ &apos;86000US30101&apos;,
+ &apos;86000US30152&apos;,
+ &apos;86000US30265&apos;,
+ &apos;86000US32819&apos;,
+ &apos;86000US33071&apos;,
+ &apos;86000US33324&apos;,
+ &apos;86000US33414&apos;,
+ &apos;86000US43230&apos;,
+ &apos;86000US48083&apos;,
+ &apos;86000US48103&apos;,
+ &apos;86000US48187&apos;,
+ &apos;86000US55116&apos;,
+ &apos;86000US55337&apos;,
+ &apos;86000US55406&apos;,
+ &apos;86000US60070&apos;,
+ &apos;86000US60188&apos;,
+ &apos;86000US60542&apos;,
+ &apos;86000US61615&apos;,
+ &apos;86000US61822&apos;,
+ &apos;86000US62269&apos;,
+ &apos;86000US73170&apos;,
+ &apos;86000US75229&apos;,
+ &apos;86000US85044&apos;,
+ &apos;86000US91504&apos;,
+ &apos;86000US91505&apos;,
+ &apos;86000US92373&apos;,
+ &apos;86000US93940&apos;,
+ &apos;86000US94061&apos;,
+ &apos;86000US97086&apos;,
+ &apos;86000US98011&apos;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Update-data-tables-in-CartoDB">Update data tables in CartoDB<a class="anchor-link" href="#Update-data-tables-in-CartoDB">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c">#!pip install --user cartodb</span>
+<span class="c"># Set up cartodb module for use</span>
+<span class="kn">from</span> <span class="nn">cartodb</span> <span class="kn">import</span> <span class="n">CartoDBAPIKey</span><span class="p">,</span> <span class="n">CartoDBException</span>
+<span class="n">API_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;CARTODB_APIKEY&#39;</span><span class="p">]</span>
+<span class="n">CARTODB_ACCOUNT</span> <span class="o">=</span> <span class="s">&#39;os.environ[&#39;</span><span class="n">CARTODB_ACCOUNT</span><span class="s">&#39;]</span>
+<span class="n">cl</span> <span class="o">=</span> <span class="n">CartoDBAPIKey</span><span class="p">(</span><span class="n">API_KEY</span><span class="p">,</span> <span class="n">CARTODB_ACCOUNT</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Update-Sales-table-in-CartoDB">Update Sales table in CartoDB<a class="anchor-link" href="#Update-Sales-table-in-CartoDB">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># output good Census zips to a list</span>
+<span class="n">ziplist</span> <span class="o">=</span> <span class="n">highsaleszips</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
+<span class="n">insertsql</span> <span class="o">=</span> <span class="s">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&quot;INSERT INTO highsaleszips(zipcode) VALUES (&#39;</span><span class="si">%s</span><span class="s">&#39;)&quot;</span> <span class="o">%</span><span class="k">x</span>, ziplist))
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># update sales table</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&#39;delete from highsaleszips&#39;</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">insertsql</span><span class="p">))</span>
+<span class="k">except</span> <span class="n">CartoDBException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;some error ocurred&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 53, u&apos;time&apos;: 0.061}
+{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.701}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Update-prospective-zip-codes--in-CartoDB">Update prospective zip codes  in CartoDB<a class="anchor-link" href="#Update-prospective-zip-codes--in-CartoDB">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># output good Census zips to a list</span>
+<span class="n">ziplist</span> <span class="o">=</span> <span class="n">censusgood_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
+<span class="n">insertsql</span> <span class="o">=</span> <span class="s">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&quot;INSERT INTO prospectzips(zipcode) VALUES (&#39;</span><span class="si">%s</span><span class="s">&#39;)&quot;</span> <span class="o">%</span><span class="k">x</span>, ziplist))
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&#39;delete from prospectzips&#39;</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">insertsql</span><span class="p">))</span>
+<span class="k">except</span> <span class="n">CartoDBException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;some error ocurred&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 38, u&apos;time&apos;: 0.019}
+{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.588}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Display-the-dynamic-map">Display the dynamic map<a class="anchor-link" href="#Display-the-dynamic-map">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="nx">javascript</span>
+<span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;link rel=&quot;stylesheet&quot; href=&quot;http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css&quot; /&gt;&#39;</span><span class="p">);</span>
+<span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;h2&gt;High value target sales areas&lt;/h2&gt;&#39;</span><span class="p">);</span>
+<span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;div id=&quot;map&quot; style=&quot;height:450px;width:850px;padding:0;margin:0&quot;&gt;&lt;/div&gt;&#39;</span><span class="p">);</span>
+
+<span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+  <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">cartodblib</span><span class="o">:</span> <span class="s1">&#39;//libs.cartocdn.com/cartodb.js/v3/3.15/cartodb&#39;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">main</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">cartodb</span><span class="p">.</span><span class="nx">createVis</span><span class="p">(</span><span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="s1">&#39;https://ibmanalytics.cartodb.com/u/ibm/api/v2/viz/2bd6ea76-9f7f-11e5-a024-0e674067d321/viz.json&#39;</span><span class="p">,</span> <span class="p">{</span>
+      <span class="nx">shareable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="nx">title</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="nx">description</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="nx">search</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="nx">tiles_loader</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="nx">center_lat</span><span class="o">:</span> <span class="mi">40</span><span class="p">,</span> <span class="nx">center_lon</span><span class="o">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="nx">zoom</span><span class="o">:</span> <span class="mi">3</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">vis</span><span class="p">,</span> <span class="nx">layers</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// layer 0 is the base layer, layer 1 is cartodb layer</span>
+    <span class="c1">//layers[1].setInteraction(true);</span>
+    <span class="c1">//layers[1].on(&#39;featureOver&#39;, function(e, latlng, pos, data) {</span>
+    <span class="c1">//  cartodb.log.log(e, latlng, pos, data);</span>
+    <span class="c1">//});</span>
+    <span class="c1">//var map = vis.getNativeMap(); // get the native map to work with it</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">require</span><span class="p">([</span><span class="s1">&#39;cartodblib&#39;</span><span class="p">],</span> <span class="nx">main</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_subarea output_javascript ">
+<script type="text/javascript">
+element.append('<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />');
+element.append('<h2>High value target sales areas</h2>');
+element.append('<div id="map" style="height:450px;width:850px;padding:0;margin:0"></div>');
+
+require.config({
+  paths: {
+      cartodblib: '//libs.cartocdn.com/cartodb.js/v3/3.15/cartodb'
+  }
+});
+
+var main = function() {
+  cartodb.createVis('map', 'https://ibmanalytics.cartodb.com/u/ibm/api/v2/viz/2bd6ea76-9f7f-11e5-a024-0e674067d321/viz.json', {
+      shareable: true,title: true,description: true,search: true,tiles_loader: true,
+      center_lat: 40, center_lon: -100, zoom: 3
+  })
+  .done(function(vis, layers) {
+    // layer 0 is the base layer, layer 1 is cartodb layer
+    //layers[1].setInteraction(true);
+    //layers[1].on('featureOver', function(e, latlng, pos, data) {
+    //  cartodb.log.log(e, latlng, pos, data);
+    //});
+    //var map = vis.getNativeMap(); // get the native map to work with it
+  })
+  .error(function(err) {
+    console.log(err);
+  });
+}
+
+require(['cartodblib'], main);
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="The-end">The end<a class="anchor-link" href="#The-end">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Appendices">Appendices<a class="anchor-link" href="#Appendices">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="correlation"></a></p>
+<h2 id="Appendix-A:-Examining-correlation">Appendix A: Examining correlation<a class="anchor-link" href="#Appendix-A:-Examining-correlation">&#182;</a></h2><p>In this section, we take a quick look at the correlation coefficients of many of our variables of interest to make sure it's worth looking at each one separately. This function computes the <a href="https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient">Pearson product-moment correlation coefficient</a>, which looks at two variables and computes a number between -1 and 1, where -1 is perfect negative correlation, 1 is perfect positive correlation, and 0 is no correlation.</p>
 <p>None of our variables of interest have a particularly strong correlation with each other (except for the obvious ones like income with bachelor's (BA) or graduate degree (GRAD)), so we can proceed with analysis knowing that it's worth looking at all of them.</p>
 
 </div>
@@ -660,7 +1915,7 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">corr</span> <span class="o">=</span> <span class="n">census_df</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
@@ -1139,519 +2394,14 @@ IollRERERPRFEsuIiIiI6IsklhERERHRF0ksIyIiIqIv/j8teZseo/MrZwAAAABJRU5ErkJggg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="salesdata"></a></p>
-<h2 id="Sales-data">Sales data<a class="anchor-link" href="#Sales-data">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="salesdataimport"></a></p>
-<h3 id="Import-sample-sales-data-set">Import sample sales data set<a class="anchor-link" href="#Import-sample-sales-data-set">&#182;</a></h3><p>Here we bring in a relatively small sample sales data set. There are only about 400 U.S. sales for the product we are interested in -- "Product1". But this is good enough to illustrate the analysis.</p>
-<p>If you were to do this yourself with your own sales data, your data should organized as follows:</p>
-<ol>
-<li>there should be sales in the U.S. (since we're analyzing it against U.S. Census data)</li>
-<li>each row should represent a unique sale</li>
-<li>the data set should contain columns for zip code, price, product ID and Country name</li>
-<li>the data set should be in a CSV text file format</li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">country</span> <span class="o">=</span> <span class="s">&#39;United States&#39;</span>
-<span class="n">product</span> <span class="o">=</span> <span class="s">&#39;Product1&#39;</span>
-
-<span class="c"># import the CSV file</span>
-<span class="c">#raw_data = getFileContent(credentials)</span>
-<span class="n">raw_data</span> <span class="o">=</span> <span class="s">&quot;https://github.com/ibm-cds-labs/open-data/raw/master/salesjan2009/salesjan2009.csv.gz&quot;</span>
-
-<span class="c"># create a data frame with just the columns we need</span>
-<span class="n">sales_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s">&#39;gzip&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;US Zip&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">},</span> 
-                       <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Product&#39;</span><span class="p">,</span><span class="s">&#39;US Zip&#39;</span><span class="p">,</span><span class="s">&#39;Country&#39;</span><span class="p">])</span>
-
-<span class="c"># just get US sales for a single product</span>
-<span class="n">sales_df</span> <span class="o">=</span> <span class="n">sales_df</span><span class="p">[</span> <span class="p">(</span><span class="n">sales_df</span><span class="o">.</span><span class="n">Product</span> <span class="o">==</span> <span class="n">product</span><span class="p">)</span> 
-                      <span class="o">&amp;</span> <span class="p">(</span><span class="n">sales_df</span><span class="o">.</span><span class="n">Country</span> <span class="o">==</span> <span class="n">country</span><span class="p">)]</span>
-
-<span class="c"># make the zip code format match the zip code format in the census data</span>
-<span class="n">sales_df</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;86000US&quot;</span> <span class="o">+</span> <span class="n">sales_df</span><span class="p">[</span><span class="s">&#39;US Zip&#39;</span><span class="p">]</span>
-
-<span class="c"># drop columns we don&#39;t need anymore</span>
-<span class="n">sales_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">&#39;Product&#39;</span><span class="p">,</span><span class="s">&#39;Country&#39;</span><span class="p">,</span><span class="s">&#39;US Zip&#39;</span><span class="p">],</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sales_counts</span> <span class="o">=</span> <span class="n">sales_df</span><span class="p">[</span><span class="s">&#39;GEOID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
-<span class="n">sales_counts</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Sales&#39;</span>
-<span class="n">sales_counts</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>count    306.000000
-mean       1.307190
-std        0.866733
-min        1.000000
-25%        1.000000
-50%        1.000000
-75%        1.000000
-max        9.000000
-Name: Sales, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="salesdatamerge"></a></p>
-<h3 id="Merge-sales-to-Census">Merge sales to Census<a class="anchor-link" href="#Merge-sales-to-Census">&#182;</a></h3><p><a href="#toc">back to top</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">saleszips</span> <span class="o">=</span> <span class="n">census_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sales_counts</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s">&#39;right&#39;</span><span class="p">)</span>
-<span class="n">saleszips</span><span class="p">[</span><span class="s">&#39;Zip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">saleszips</span><span class="o">.</span><span class="n">index</span>
-<span class="n">saleszips</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>INCOME</th>
-      <th>AGE</th>
-      <th>NOHSDIP</th>
-      <th>HSDIPSOMECOL</th>
-      <th>BA</th>
-      <th>GRAD</th>
-      <th>POPULATION</th>
-      <th>WHITE</th>
-      <th>BLACK</th>
-      <th>NATAMER</th>
-      <th>ASIAN</th>
-      <th>PACISL</th>
-      <th>OTHERRACE</th>
-      <th>MULTIRACE</th>
-      <th>HISPLAT</th>
-      <th>Sales</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>305.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>304.000000</td>
-      <td>306.000000</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>76178.167763</td>
-      <td>39.015132</td>
-      <td>0.100072</td>
-      <td>0.472995</td>
-      <td>0.246166</td>
-      <td>0.180768</td>
-      <td>17508.301639</td>
-      <td>0.760876</td>
-      <td>0.093561</td>
-      <td>0.005064</td>
-      <td>0.072316</td>
-      <td>0.002496</td>
-      <td>0.036198</td>
-      <td>0.029490</td>
-      <td>0.134404</td>
-      <td>1.307190</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>36094.736528</td>
-      <td>6.057036</td>
-      <td>0.083413</td>
-      <td>0.148536</td>
-      <td>0.093341</td>
-      <td>0.115888</td>
-      <td>11111.128358</td>
-      <td>0.193980</td>
-      <td>0.144929</td>
-      <td>0.012988</td>
-      <td>0.090579</td>
-      <td>0.011741</td>
-      <td>0.056148</td>
-      <td>0.031175</td>
-      <td>0.151961</td>
-      <td>0.866733</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>16069.000000</td>
-      <td>21.800000</td>
-      <td>0.000000</td>
-      <td>0.040559</td>
-      <td>0.000000</td>
-      <td>0.010708</td>
-      <td>0.000000</td>
-      <td>0.095601</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>1.000000</td>
-    </tr>
-    <tr>
-      <th>40%</th>
-      <td>62186.000000</td>
-      <td>37.400000</td>
-      <td>0.058791</td>
-      <td>0.436068</td>
-      <td>0.220465</td>
-      <td>0.124059</td>
-      <td>13572.800000</td>
-      <td>0.783673</td>
-      <td>0.025167</td>
-      <td>0.001416</td>
-      <td>0.027078</td>
-      <td>0.000000</td>
-      <td>0.011289</td>
-      <td>0.020066</td>
-      <td>0.060033</td>
-      <td>1.000000</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>69855.500000</td>
-      <td>38.650000</td>
-      <td>0.074362</td>
-      <td>0.478094</td>
-      <td>0.247006</td>
-      <td>0.159859</td>
-      <td>16488.000000</td>
-      <td>0.819666</td>
-      <td>0.035619</td>
-      <td>0.002246</td>
-      <td>0.038763</td>
-      <td>0.000000</td>
-      <td>0.015675</td>
-      <td>0.023534</td>
-      <td>0.076052</td>
-      <td>1.000000</td>
-    </tr>
-    <tr>
-      <th>60%</th>
-      <td>79873.600000</td>
-      <td>40.600000</td>
-      <td>0.092572</td>
-      <td>0.531858</td>
-      <td>0.279242</td>
-      <td>0.192510</td>
-      <td>19351.800000</td>
-      <td>0.857119</td>
-      <td>0.054711</td>
-      <td>0.002938</td>
-      <td>0.056001</td>
-      <td>0.000132</td>
-      <td>0.022228</td>
-      <td>0.027695</td>
-      <td>0.104562</td>
-      <td>1.000000</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>216037.000000</td>
-      <td>68.300000</td>
-      <td>0.553417</td>
-      <td>0.769231</td>
-      <td>0.440627</td>
-      <td>0.656643</td>
-      <td>65117.000000</td>
-      <td>0.994135</td>
-      <td>0.767693</td>
-      <td>0.136069</td>
-      <td>0.488290</td>
-      <td>0.115780</td>
-      <td>0.385442</td>
-      <td>0.271421</td>
-      <td>0.887213</td>
-      <td>9.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Identify-sales-zips-with-strongest-correlation-to-customers">Identify sales zips with strongest correlation to customers<a class="anchor-link" href="#Identify-sales-zips-with-strongest-correlation-to-customers">&#182;</a></h3><p><a href="#toc">back to top</a></p>
-<p>e.g. zips with at least 2 sales - or the top 75% of zips with sales</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># 25% threshold is 1, so select zips with sales &gt; 1</span>
-<span class="n">highsaleszips</span> <span class="o">=</span> <span class="n">saleszips</span><span class="p">[</span> <span class="p">(</span> <span class="n">saleszips</span><span class="o">.</span><span class="n">Sales</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)]</span>
-<span class="n">highsaleszipssum_df</span> <span class="o">=</span> <span class="n">highsaleszips</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="o">.</span><span class="mi">40</span><span class="p">,</span><span class="o">.</span><span class="mi">50</span><span class="p">,</span><span class="o">.</span><span class="mi">60</span><span class="p">])</span>
-<span class="n">highsaleszipssum_df</span> <span class="o">=</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">index</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
-<span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">&#39;Sales&#39;</span><span class="p">],</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">highsaleszipssum_df</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[14]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>INCOME</th>
-      <th>AGE</th>
-      <th>NOHSDIP</th>
-      <th>HSDIPSOMECOL</th>
-      <th>BA</th>
-      <th>GRAD</th>
-      <th>POPULATION</th>
-      <th>WHITE</th>
-      <th>BLACK</th>
-      <th>NATAMER</th>
-      <th>ASIAN</th>
-      <th>PACISL</th>
-      <th>OTHERRACE</th>
-      <th>MULTIRACE</th>
-      <th>HISPLAT</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>mean</th>
-      <td>76031.980769</td>
-      <td>37.85</td>
-      <td>0.116458</td>
-      <td>0.416471</td>
-      <td>0.261879</td>
-      <td>0.205191</td>
-      <td>17283.132075</td>
-      <td>0.699061</td>
-      <td>0.123149</td>
-      <td>0.006745</td>
-      <td>0.089312</td>
-      <td>0.003743</td>
-      <td>0.045753</td>
-      <td>0.032236</td>
-      <td>0.171723</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>22401.000000</td>
-      <td>29.90</td>
-      <td>0.000000</td>
-      <td>0.040559</td>
-      <td>0.000000</td>
-      <td>0.016456</td>
-      <td>0.000000</td>
-      <td>0.095601</td>
-      <td>0.003826</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>40%</th>
-      <td>56963.600000</td>
-      <td>35.58</td>
-      <td>0.064051</td>
-      <td>0.396659</td>
-      <td>0.239548</td>
-      <td>0.156830</td>
-      <td>12456.400000</td>
-      <td>0.725771</td>
-      <td>0.055825</td>
-      <td>0.001435</td>
-      <td>0.037337</td>
-      <td>0.000000</td>
-      <td>0.018347</td>
-      <td>0.021595</td>
-      <td>0.077678</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>69728.500000</td>
-      <td>37.80</td>
-      <td>0.077361</td>
-      <td>0.424456</td>
-      <td>0.274037</td>
-      <td>0.178124</td>
-      <td>16354.000000</td>
-      <td>0.766824</td>
-      <td>0.080367</td>
-      <td>0.002208</td>
-      <td>0.054002</td>
-      <td>0.000000</td>
-      <td>0.021491</td>
-      <td>0.027897</td>
-      <td>0.104359</td>
-    </tr>
-    <tr>
-      <th>60%</th>
-      <td>81812.000000</td>
-      <td>39.26</td>
-      <td>0.097105</td>
-      <td>0.450315</td>
-      <td>0.307510</td>
-      <td>0.209332</td>
-      <td>18323.800000</td>
-      <td>0.796342</td>
-      <td>0.101325</td>
-      <td>0.002779</td>
-      <td>0.072390</td>
-      <td>0.000265</td>
-      <td>0.025422</td>
-      <td>0.030893</td>
-      <td>0.123695</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>216037.000000</td>
-      <td>55.60</td>
-      <td>0.417073</td>
-      <td>0.769231</td>
-      <td>0.440627</td>
-      <td>0.656643</td>
-      <td>65117.000000</td>
-      <td>0.989341</td>
-      <td>0.760590</td>
-      <td>0.136069</td>
-      <td>0.488290</td>
-      <td>0.104259</td>
-      <td>0.384390</td>
-      <td>0.191157</td>
-      <td>0.887213</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="insights"></a></p>
-<h2 id="Insights">Insights<a class="anchor-link" href="#Insights">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="viz"></a></p>
-<h3 id="Visualization">Visualization<a class="anchor-link" href="#Visualization">&#182;</a></h3>
+<h2 id="Appendix-B:-Visualizing-Customer-Demograpics-vs.-the-Nation">Appendix B: Visualizing Customer Demograpics vs. the Nation<a class="anchor-link" href="#Appendix-B:-Visualizing-Customer-Demograpics-vs.-the-Nation">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -1670,17 +2420,16 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Demographics-Histograms">Demographics Histograms<a class="anchor-link" href="#Demographics-Histograms">&#182;</a></h4>
+<h3 id="Income">Income<a class="anchor-link" href="#Income">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## Income</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">common_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mi">100000</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
@@ -1995,13 +2744,21 @@ nExLkiRJktSmvwH3Nxsq/zpHQwAAAABJRU5ErkJggg==
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Age">Age<a class="anchor-link" href="#Age">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## Age</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">common_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">60</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
@@ -2318,13 +3075,21 @@ WVPtlzcAAAAASUVORK5CYII=
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="No-High-School-diploma">No High School diploma<a class="anchor-link" href="#No-High-School-diploma">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## No H.S. diploma</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">common_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
@@ -2662,13 +3427,21 @@ JEmSJM2Q/wFUzrvgtDK/fAAAAABJRU5ErkJggg==
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Bachelor's-degree">Bachelor's degree<a class="anchor-link" href="#Bachelor's-degree">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## Bachelors degree</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">common_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
@@ -2984,13 +3757,21 @@ S5IkSZI0kM20JEmSJEkD2UxLkiRJkjSQzbQkSZIkSQP9B2GKgwCCeyX0AAAAAElFTkSuQmCC
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="White-race">White race<a class="anchor-link" href="#White-race">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## White</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">common_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
@@ -3315,13 +4096,21 @@ AAAASUVORK5CYII=
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Black-race">Black race<a class="anchor-link" href="#Black-race">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## Black</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">common_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
@@ -3614,13 +4403,21 @@ RN8AAAAASUVORK5CYII=
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Asian-race">Asian race<a class="anchor-link" href="#Asian-race">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## Asian</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">common_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
@@ -3930,13 +4727,21 @@ LrwlSZIkSarIhbckSZIkSRW58JYkSZIkqSIX3pIkSZIkVfQGyjZIlAOjHHUAAAAASUVORK5CYII=
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Hispanic-or-Latino">Hispanic or Latino<a class="anchor-link" href="#Hispanic-or-Latino">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## Hispanic or Latino</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">common_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
@@ -4281,13 +5086,13 @@ ERERiZEabxEREREREZEY/RdAd/kuEXBHXQAAAABJRU5ErkJggg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Major-racial-groups-for-zip-codes-in-which-we-have-sales">Major racial groups for zip codes in which we have sales<a class="anchor-link" href="#Major-racial-groups-for-zip-codes-in-which-we-have-sales">&#182;</a></h4>
+<h2 id="Major-racial-groups-for-zip-codes-in-which-we-have-sales">Major racial groups for zip codes in which we have sales<a class="anchor-link" href="#Major-racial-groups-for-zip-codes-in-which-we-have-sales">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">highsaleszips</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s">&#39;WHITE&#39;</span><span class="p">:</span><span class="s">&#39;ASIAN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Race in sales areas&#39;</span><span class="p">)</span>
@@ -4303,11 +5108,11 @@ ERERiZEabxEREREREZEY/RdAd/kuEXBHXQAAAABJRU5ErkJggg==
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[24]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[33]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.legend.Legend at 0x110da7450&gt;</pre>
+<pre>&lt;matplotlib.legend.Legend at 0x111f63290&gt;</pre>
 </div>
 
 </div>
@@ -4715,755 +5520,6 @@ U4H4cRMIBAKBQCAQCASmAvHjJhAIBAKBQCAQCEwF/h/OVV5VKZnNzwAAAABJRU5ErkJggg==
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># Compare characteristics of the country as a whole to zip codes with sales</span>
-<span class="n">salesdiff_df</span> <span class="o">=</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">summary_df</span><span class="p">)</span>
-<span class="n">salesdiff_df</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[25]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>INCOME</th>
-      <th>AGE</th>
-      <th>NOHSDIP</th>
-      <th>HSDIPSOMECOL</th>
-      <th>BA</th>
-      <th>GRAD</th>
-      <th>POPULATION</th>
-      <th>WHITE</th>
-      <th>BLACK</th>
-      <th>NATAMER</th>
-      <th>ASIAN</th>
-      <th>PACISL</th>
-      <th>OTHERRACE</th>
-      <th>MULTIRACE</th>
-      <th>HISPLAT</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>mean</th>
-      <td>23919.394907</td>
-      <td>-3.645351</td>
-      <td>-0.026523</td>
-      <td>-0.219417</td>
-      <td>0.120134</td>
-      <td>0.125806</td>
-      <td>11021.063841</td>
-      <td>-0.142454</td>
-      <td>0.046738</td>
-      <td>-0.010821</td>
-      <td>0.069549</td>
-      <td>0.002680</td>
-      <td>0.023970</td>
-      <td>0.010337</td>
-      <td>0.086894</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>19902.000000</td>
-      <td>25.900000</td>
-      <td>0.000000</td>
-      <td>0.040559</td>
-      <td>0.000000</td>
-      <td>0.016456</td>
-      <td>0.000000</td>
-      <td>0.095601</td>
-      <td>0.003826</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>40%</th>
-      <td>13099.600000</td>
-      <td>-3.820000</td>
-      <td>-0.034500</td>
-      <td>-0.233226</td>
-      <td>0.137569</td>
-      <td>0.112301</td>
-      <td>11335.400000</td>
-      <td>-0.162916</td>
-      <td>0.052802</td>
-      <td>0.001435</td>
-      <td>0.037337</td>
-      <td>0.000000</td>
-      <td>0.018347</td>
-      <td>0.011962</td>
-      <td>0.061422</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>21950.500000</td>
-      <td>-3.300000</td>
-      <td>-0.041458</td>
-      <td>-0.233619</td>
-      <td>0.153049</td>
-      <td>0.123076</td>
-      <td>14469.000000</td>
-      <td>-0.162181</td>
-      <td>0.071687</td>
-      <td>0.001277</td>
-      <td>0.051482</td>
-      <td>0.000000</td>
-      <td>0.018878</td>
-      <td>0.013903</td>
-      <td>0.078132</td>
-    </tr>
-    <tr>
-      <th>60%</th>
-      <td>29781.000000</td>
-      <td>-3.640000</td>
-      <td>-0.045903</td>
-      <td>-0.233622</td>
-      <td>0.164821</td>
-      <td>0.141581</td>
-      <td>14986.000000</td>
-      <td>-0.157968</td>
-      <td>0.082226</td>
-      <td>0.000542</td>
-      <td>0.066553</td>
-      <td>0.000265</td>
-      <td>0.019091</td>
-      <td>0.012111</td>
-      <td>0.083207</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>-33964.000000</td>
-      <td>-35.900000</td>
-      <td>-0.582927</td>
-      <td>-0.230769</td>
-      <td>-0.559373</td>
-      <td>-0.343357</td>
-      <td>-8052.000000</td>
-      <td>-0.010659</td>
-      <td>-0.239410</td>
-      <td>-0.863931</td>
-      <td>-0.511710</td>
-      <td>-0.505829</td>
-      <td>-0.615610</td>
-      <td>-0.808843</td>
-      <td>-0.112787</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="summary"></a></p>
-<h3 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h3><h4 id="Incomes-are-much-higher">Incomes are much higher<a class="anchor-link" href="#Incomes-are-much-higher">&#182;</a></h4><p>Median household income overall is about $22,000 higher than the country as a whole, which is <strong>very</strong> significant as that represents a nearly 50\% increase in income in these zip codes we sell to.</p>
-<h4 id="Education-is-greater">Education is greater<a class="anchor-link" href="#Education-is-greater">&#182;</a></h4><p>The percentage of people with high school diplomas but no college degree is almost 24\% lower in our sales zips, and that is compensated by a much greater number of college grads (16\% higher) and people with graduate degrees of some sort (12\% higher).</p>
-<h4 id="People-are-a-little-younger">People are a little younger<a class="anchor-link" href="#People-are-a-little-younger">&#182;</a></h4><p>Males and females are about 3 1/2 years younger in our zip codes than in the country as a whole.</p>
-<h4 id="White-population-is-lower">White population is lower<a class="anchor-link" href="#White-population-is-lower">&#182;</a></h4><p>The white population is lower, and there is a corresponding higher number of other races.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="zipfind"></a></p>
-<h2 id="Finding-high-potential-zip-codes">Finding high potential zip codes<a class="anchor-link" href="#Finding-high-potential-zip-codes">&#182;</a></h2><p>Here we take the variables we found to best explain the population of sales areas, and we look for other zip codes whose demographic characteristics for those variables are within 10 percentage points of the median.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">censusgood_df</span> <span class="o">=</span> <span class="n">census_df</span> <span class="p">[</span>
-    <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">INCOME</span> <span class="o">&gt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;40%&#39;</span><span class="p">,</span><span class="s">&#39;INCOME&#39;</span><span class="p">]</span> <span class="p">)</span>
-    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">INCOME</span> <span class="o">&lt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;60%&#39;</span><span class="p">,</span><span class="s">&#39;INCOME&#39;</span><span class="p">]</span> <span class="p">)</span>
-    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">AGE</span> <span class="o">&gt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;40%&#39;</span><span class="p">,</span><span class="s">&#39;AGE&#39;</span><span class="p">]</span> <span class="p">)</span>
-    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">AGE</span> <span class="o">&lt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;60%&#39;</span><span class="p">,</span><span class="s">&#39;AGE&#39;</span><span class="p">]</span> <span class="p">)</span>
-    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">BA</span> <span class="o">&gt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;40%&#39;</span><span class="p">,</span><span class="s">&#39;BA&#39;</span><span class="p">]</span> <span class="p">)</span>
-    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">BA</span> <span class="o">&lt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;60%&#39;</span><span class="p">,</span><span class="s">&#39;BA&#39;</span><span class="p">]</span> <span class="p">)</span>
-    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">WHITE</span> <span class="o">&gt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;40%&#39;</span><span class="p">,</span><span class="s">&#39;WHITE&#39;</span><span class="p">]</span> <span class="p">)</span>
-    <span class="o">&amp;</span> <span class="p">(</span> <span class="n">census_df</span><span class="o">.</span><span class="n">WHITE</span> <span class="o">&lt;</span> <span class="n">highsaleszipssum_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;60%&#39;</span><span class="p">,</span><span class="s">&#39;WHITE&#39;</span><span class="p">]</span> <span class="p">)</span>
-    <span class="p">]</span>
-<span class="n">censusgood_df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[26]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>INCOME</th>
-      <th>AGE</th>
-      <th>NOHSDIP</th>
-      <th>HSDIPSOMECOL</th>
-      <th>BA</th>
-      <th>GRAD</th>
-      <th>POPULATION</th>
-      <th>WHITE</th>
-      <th>BLACK</th>
-      <th>NATAMER</th>
-      <th>ASIAN</th>
-      <th>PACISL</th>
-      <th>OTHERRACE</th>
-      <th>MULTIRACE</th>
-      <th>HISPLAT</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-      <td>38.000000</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>70446.605263</td>
-      <td>37.463158</td>
-      <td>0.075874</td>
-      <td>0.480398</td>
-      <td>0.270187</td>
-      <td>0.173540</td>
-      <td>23031.210526</td>
-      <td>0.768633</td>
-      <td>0.085920</td>
-      <td>0.005015</td>
-      <td>0.076523</td>
-      <td>0.000892</td>
-      <td>0.034307</td>
-      <td>0.028710</td>
-      <td>0.129219</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>6742.784887</td>
-      <td>1.088371</td>
-      <td>0.040426</td>
-      <td>0.071450</td>
-      <td>0.021725</td>
-      <td>0.067237</td>
-      <td>9070.647905</td>
-      <td>0.016332</td>
-      <td>0.053489</td>
-      <td>0.006879</td>
-      <td>0.045081</td>
-      <td>0.001449</td>
-      <td>0.033679</td>
-      <td>0.013181</td>
-      <td>0.103808</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>56989.000000</td>
-      <td>35.600000</td>
-      <td>0.026752</td>
-      <td>0.284136</td>
-      <td>0.240809</td>
-      <td>0.095628</td>
-      <td>8661.000000</td>
-      <td>0.734561</td>
-      <td>0.004204</td>
-      <td>0.000000</td>
-      <td>0.010085</td>
-      <td>0.000000</td>
-      <td>0.001946</td>
-      <td>0.005835</td>
-      <td>0.003232</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>65683.000000</td>
-      <td>36.700000</td>
-      <td>0.054869</td>
-      <td>0.445958</td>
-      <td>0.252169</td>
-      <td>0.134817</td>
-      <td>17189.000000</td>
-      <td>0.758709</td>
-      <td>0.031806</td>
-      <td>0.001363</td>
-      <td>0.035986</td>
-      <td>0.000000</td>
-      <td>0.012179</td>
-      <td>0.021300</td>
-      <td>0.044803</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>71264.500000</td>
-      <td>37.500000</td>
-      <td>0.059818</td>
-      <td>0.495970</td>
-      <td>0.266366</td>
-      <td>0.152044</td>
-      <td>22907.500000</td>
-      <td>0.769553</td>
-      <td>0.081308</td>
-      <td>0.002594</td>
-      <td>0.069844</td>
-      <td>0.000169</td>
-      <td>0.026639</td>
-      <td>0.023845</td>
-      <td>0.103528</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>75855.750000</td>
-      <td>38.275000</td>
-      <td>0.083850</td>
-      <td>0.521748</td>
-      <td>0.288145</td>
-      <td>0.188011</td>
-      <td>27507.250000</td>
-      <td>0.782585</td>
-      <td>0.139436</td>
-      <td>0.005690</td>
-      <td>0.114887</td>
-      <td>0.001007</td>
-      <td>0.040903</td>
-      <td>0.034961</td>
-      <td>0.182670</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>81570.000000</td>
-      <td>39.200000</td>
-      <td>0.230875</td>
-      <td>0.591778</td>
-      <td>0.307421</td>
-      <td>0.399583</td>
-      <td>52815.000000</td>
-      <td>0.795636</td>
-      <td>0.194423</td>
-      <td>0.030930</td>
-      <td>0.174340</td>
-      <td>0.005354</td>
-      <td>0.166911</td>
-      <td>0.056916</td>
-      <td>0.400737</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="targetregions"></a></p>
-<h3 id="Target-regions">Target regions<a class="anchor-link" href="#Target-regions">&#182;</a></h3><p>Here we list the matching zip codes. From this point you could use this list in a variety of ways. Here are some ideas:</p>
-<ul>
-<li>Guidance for where to spend marketing dollars</li>
-<li>Filter existing direct mail lists to target those most likely to buy</li>
-<li>Guidance on where to build retail outlets, or if you're a wholesaler, where you want to get your products retailed.</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">censusgood_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[27]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&apos;86000US06119&apos;,
- &apos;86000US07012&apos;,
- &apos;86000US11209&apos;,
- &apos;86000US15220&apos;,
- &apos;86000US21209&apos;,
- &apos;86000US27511&apos;,
- &apos;86000US28075&apos;,
- &apos;86000US29414&apos;,
- &apos;86000US30101&apos;,
- &apos;86000US30152&apos;,
- &apos;86000US30265&apos;,
- &apos;86000US32819&apos;,
- &apos;86000US33071&apos;,
- &apos;86000US33324&apos;,
- &apos;86000US33414&apos;,
- &apos;86000US43230&apos;,
- &apos;86000US48083&apos;,
- &apos;86000US48103&apos;,
- &apos;86000US48187&apos;,
- &apos;86000US55116&apos;,
- &apos;86000US55337&apos;,
- &apos;86000US55406&apos;,
- &apos;86000US60070&apos;,
- &apos;86000US60188&apos;,
- &apos;86000US60542&apos;,
- &apos;86000US61615&apos;,
- &apos;86000US61822&apos;,
- &apos;86000US62269&apos;,
- &apos;86000US73170&apos;,
- &apos;86000US75229&apos;,
- &apos;86000US85044&apos;,
- &apos;86000US91504&apos;,
- &apos;86000US91505&apos;,
- &apos;86000US92373&apos;,
- &apos;86000US93940&apos;,
- &apos;86000US94061&apos;,
- &apos;86000US97086&apos;,
- &apos;86000US98011&apos;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Update-data-tables-in-CartoDB">Update data tables in CartoDB<a class="anchor-link" href="#Update-data-tables-in-CartoDB">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">#!pip install --user cartodb</span>
-<span class="c"># Set up cartodb module for use</span>
-<span class="kn">from</span> <span class="nn">cartodb</span> <span class="kn">import</span> <span class="n">CartoDBAPIKey</span><span class="p">,</span> <span class="n">CartoDBException</span>
-<span class="n">API_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;CARTODB_APIKEY&#39;</span><span class="p">]</span>
-<span class="n">CARTODB_ACCOUNT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;CARTODB_ACCOUNT&#39;</span><span class="p">]</span>
-<span class="n">cl</span> <span class="o">=</span> <span class="n">CartoDBAPIKey</span><span class="p">(</span><span class="n">API_KEY</span><span class="p">,</span> <span class="n">CARTODB_ACCOUNT</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Update-Sales-table-in-CartoDB">Update Sales table in CartoDB<a class="anchor-link" href="#Update-Sales-table-in-CartoDB">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># output good Census zips to a list</span>
-<span class="n">ziplist</span> <span class="o">=</span> <span class="n">highsaleszips</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
-<span class="n">insertsql</span> <span class="o">=</span> <span class="s">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&quot;INSERT INTO highsaleszips(zipcode) VALUES (&#39;</span><span class="si">%s</span><span class="s">&#39;)&quot;</span> <span class="o">%</span><span class="k">x</span>, ziplist))
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># update sales table</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&#39;delete from highsaleszips&#39;</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">insertsql</span><span class="p">))</span>
-<span class="k">except</span> <span class="n">CartoDBException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;some error ocurred&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 53, u&apos;time&apos;: 0.115}
-{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.386}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Update-prospective-zip-codes--in-CartoDB">Update prospective zip codes  in CartoDB<a class="anchor-link" href="#Update-prospective-zip-codes--in-CartoDB">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># output good Census zips to a list</span>
-<span class="n">ziplist</span> <span class="o">=</span> <span class="n">censusgood_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
-<span class="n">insertsql</span> <span class="o">=</span> <span class="s">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&quot;INSERT INTO prospectzips(zipcode) VALUES (&#39;</span><span class="si">%s</span><span class="s">&#39;)&quot;</span> <span class="o">%</span><span class="k">x</span>, ziplist))
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">try</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&#39;delete from prospectzips&#39;</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">insertsql</span><span class="p">))</span>
-<span class="k">except</span> <span class="n">CartoDBException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;some error ocurred&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 38, u&apos;time&apos;: 0.007}
-{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.179}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Display-the-dynamic-map">Display the dynamic map<a class="anchor-link" href="#Display-the-dynamic-map">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="nx">javascript</span>
-<span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;link rel=&quot;stylesheet&quot; href=&quot;http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css&quot; /&gt;&#39;</span><span class="p">);</span>
-<span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;h2&gt;High value target sales areas&lt;/h2&gt;&#39;</span><span class="p">);</span>
-<span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;div id=&quot;map&quot; style=&quot;height:450px;width:850px;padding:0;margin:0&quot;&gt;&lt;/div&gt;&#39;</span><span class="p">);</span>
-
-<span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
-  <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
-      <span class="nx">cartodblib</span><span class="o">:</span> <span class="s1">&#39;//libs.cartocdn.com/cartodb.js/v3/3.15/cartodb&#39;</span>
-  <span class="p">}</span>
-<span class="p">});</span>
-
-<span class="kd">var</span> <span class="nx">main</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">cartodb</span><span class="p">.</span><span class="nx">createVis</span><span class="p">(</span><span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="s1">&#39;https://ibmanalytics.cartodb.com/u/ibm/api/v2/viz/2bd6ea76-9f7f-11e5-a024-0e674067d321/viz.json&#39;</span><span class="p">,</span> <span class="p">{</span>
-      <span class="nx">shareable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="nx">title</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="nx">description</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="nx">search</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="nx">tiles_loader</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">center_lat</span><span class="o">:</span> <span class="mi">40</span><span class="p">,</span> <span class="nx">center_lon</span><span class="o">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="nx">zoom</span><span class="o">:</span> <span class="mi">3</span>
-  <span class="p">})</span>
-  <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">vis</span><span class="p">,</span> <span class="nx">layers</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// layer 0 is the base layer, layer 1 is cartodb layer</span>
-    <span class="c1">//layers[1].setInteraction(true);</span>
-    <span class="c1">//layers[1].on(&#39;featureOver&#39;, function(e, latlng, pos, data) {</span>
-    <span class="c1">//  cartodb.log.log(e, latlng, pos, data);</span>
-    <span class="c1">//});</span>
-    <span class="c1">//var map = vis.getNativeMap(); // get the native map to work with it</span>
-  <span class="p">})</span>
-  <span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
-  <span class="p">});</span>
-<span class="p">}</span>
-
-<span class="nx">require</span><span class="p">([</span><span class="s1">&#39;cartodblib&#39;</span><span class="p">],</span> <span class="nx">main</span><span class="p">);</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-
-
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-element.append('<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />');
-element.append('<h2>High value target sales areas</h2>');
-element.append('<div id="map" style="height:450px;width:850px;padding:0;margin:0"></div>');
-
-require.config({
-  paths: {
-      cartodblib: '//libs.cartocdn.com/cartodb.js/v3/3.15/cartodb'
-  }
-});
-
-var main = function() {
-  cartodb.createVis('map', 'https://ibmanalytics.cartodb.com/u/ibm/api/v2/viz/2bd6ea76-9f7f-11e5-a024-0e674067d321/viz.json', {
-      shareable: true,title: true,description: true,search: true,tiles_loader: true,
-      center_lat: 40, center_lon: -100, zoom: 3
-  })
-  .done(function(vis, layers) {
-    // layer 0 is the base layer, layer 1 is cartodb layer
-    //layers[1].setInteraction(true);
-    //layers[1].on('featureOver', function(e, latlng, pos, data) {
-    //  cartodb.log.log(e, latlng, pos, data);
-    //});
-    //var map = vis.getNativeMap(); // get the native map to work with it
-  })
-  .error(function(err) {
-    console.log(err);
-  });
-}
-
-require(['cartodblib'], main);
-</script>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-end">The end<a class="anchor-link" href="#The-end">&#182;</a></h2>
-</div>
-</div>
 </div>
     </div>
   </div>
