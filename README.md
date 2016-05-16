@@ -6,6 +6,12 @@ While [Analytics Exchange](https://console.ng.bluemix.net/data/exchange/) is the
 
 Each directory has it's own specific README.md file describing its contents and purpose.
 
+## Samples
+
+Explore these [samples](http://ibm-cds-labs.github.io/open-data/samples/). 
+
+http://ibm-cds-labs.github.io/open-data/samples/
+
 
 ## Terms of Use
 
