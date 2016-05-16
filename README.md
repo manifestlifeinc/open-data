@@ -1,8 +1,8 @@
 # open-data
 
-Open data and tools hosted by IBM Cloud Data Services (CDS).
+Open data sets, tools, and discussion hosted by IBM Cloud Data Services (CDS).
 
-While [http://opendata.mybluemix.net/](http://opendata.mybluemix.net/) is the primary home page for CDS' open data work, here you can find processing tools, analytics scripts and smaller data sets.
+While [Analytics Exchange](https://console.ng.bluemix.net/data/exchange/) is the primary site for finding and using open data sets with IBM's cloud databases, here you can find processing tools, sample apps and scripts, and smaller, *ad-hoc* test data sets.
 
 Each directory has it's own specific README.md file describing its contents and purpose.
 
