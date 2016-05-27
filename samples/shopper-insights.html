@@ -174,9 +174,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Simple-Shopper-Insights">Simple Shopper Insights<a class="anchor-link" href="#Simple-Shopper-Insights">&#182;</a></h1><p>last modified: February, 2016</p>
+<h1 id="Simple-Shopper-Insights">Simple Shopper Insights<a class="anchor-link" href="#Simple-Shopper-Insights">&#182;</a></h1><p>last modified: May, 2016</p>
 <p>author: <a href="https://developer.ibm.com/clouddataservices/author/rrsingh/">Raj Singh</a></p>
-<p>original: <a href="https://github.com/ibm-cds-labs/open-data/tree/master/samples">https://github.com/ibm-cds-labs/open-data/tree/master/samples</a></p>
+<p>original: <a href="https://github.com/ibm-cds-labs/open-data/blob/master/samples/shopper-insights.ipynb">https://github.com/ibm-cds-labs/open-data/blob/master/samples/shopper-insights.ipynb</a></p>
 
 </div>
 </div>
@@ -220,11 +220,10 @@ div#notebook {
 <li><a href="#insights">Insights</a></li>
 <li><a href="#zipfind">Finding high potential zip codes</a></li>
 <li><a href="#targetregions">Target zip codes</a></li>
-<li><a href="#map">Mapping</a></li>
+<li><a href="#mapping">Mapping</a></li>
 <li>Appendices<ul>
-<li><a href="#summarystats">Appendix A: Summary statistics for Census data</a></li>
-<li><a href="#correlation">Appendix B: Examining correlation</a></li>
-<li><a href="#viz">Appendix C: Visualizing Customer Demograpics vs. the Nation</a></li>
+<li><a href="#correlation">Appendix A: Examining correlation</a></li>
+<li><a href="#viz">Appendix B: Visualizing Customer Demograpics vs. the Nation</a></li>
 </ul>
 </li>
 </ul>
@@ -298,6 +297,14 @@ Import libraries and connection information to connect to Swift Object Storage o
 <li>This data set is smaller than the full Census, but still has the important income, education, race, age and occupation demographics we want to use.</li>
 </ol>
 <p>If you want to do this yourself, <a href="https://developer.ibm.com/clouddataservices/2015/09/08/census-open-data-on-ibm-cloud/">this article</a> explains how to get a CSV out of that format.</p>
+<h3 id="Accessing-Census-files">Accessing Census files<a class="anchor-link" href="#Accessing-Census-files">&#182;</a></h3><p>Access the files mentioned here via the <a href="https://console.ng.bluemix.net/data/exchange/">IBM Analytics Exchange</a>. You can get your free, individual "API key" on each data set's detail page:</p>
+<ul>
+<li><a href="https://console.ng.bluemix.net/data/exchange/public/e/united-states-demographic-measures-income">Income</a></li>
+<li><a href="https://console.ng.bluemix.net/data/exchange/public/e/united-states-demographic-measures-age">Age</a></li>
+<li><a href="https://console.ng.bluemix.net/data/exchange/public/e/united-states-demographic-measures-education">Education</a></li>
+<li><a href="https://console.ng.bluemix.net/data/exchange/public/e/united-states-demographic-measures-race">Race</a></li>
+</ul>
+<p>After getting your API key (your personal URL for the data file), in this script replace, for example, <code>os.environ['AE_KEY_AGE']</code> with your URL for the Age data CSV file.</p>
 
 </div>
 </div>
@@ -465,9 +472,13 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
                                  <span class="s">&#39;B15003e21&#39;</span><span class="p">,</span><span class="s">&#39;B15003e22&#39;</span><span class="p">,</span><span class="s">&#39;B15003e23&#39;</span><span class="p">,</span><span class="s">&#39;B15003e24&#39;</span><span class="p">,</span><span class="s">&#39;B15003e25&#39;</span><span class="p">])</span>
 
 <span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;NOHSDIP&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e2&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e3&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e4&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e5&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e6&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e7&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e8&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e9&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e10&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e11&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e12&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e13&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e14&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e15&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e16&#39;</span><span class="p">])</span><span class="o">/</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e1&#39;</span><span class="p">]</span>
+
 <span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;HSDIPSOMECOL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e17&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e18&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e19&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e20&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e21&#39;</span><span class="p">])</span><span class="o">/</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e1&#39;</span><span class="p">]</span>
+
 <span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;BA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e22&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e1&#39;</span><span class="p">]</span>
+
 <span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;GRAD&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e23&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e24&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e25&#39;</span><span class="p">])</span><span class="o">/</span><span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e1&#39;</span><span class="p">]</span>
+
 <span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;POPULATION&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">census_edu_df</span><span class="p">[</span><span class="s">&#39;B15003e1&#39;</span><span class="p">]</span>
 
 <span class="n">census_edu_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">&#39;B15003e1&#39;</span><span class="p">,</span><span class="s">&#39;B15003e2&#39;</span><span class="p">,</span><span class="s">&#39;B15003e3&#39;</span><span class="p">,</span><span class="s">&#39;B15003e4&#39;</span><span class="p">,</span><span class="s">&#39;B15003e5&#39;</span><span class="p">,</span><span class="s">&#39;B15003e6&#39;</span><span class="p">,</span>
@@ -547,94 +558,94 @@ B03001e3: Hispanic or Latino: Total population</code></pre>
   </thead>
   <tbody>
     <tr>
-      <th>86000US37151</th>
-      <td>53393</td>
-      <td>40.2</td>
-      <td>0.946721</td>
-      <td>0.038934</td>
+      <th>86000US36584</th>
+      <td>24250</td>
+      <td>37.1</td>
+      <td>0.569704</td>
+      <td>0.297475</td>
+      <td>0.061471</td>
       <td>0.000000</td>
       <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.014344</td>
-      <td>0.000000</td>
-      <td>0.138235</td>
-      <td>0.650000</td>
-      <td>0.097059</td>
-      <td>0.114706</td>
-      <td>340</td>
+      <td>0.054885</td>
+      <td>0.016465</td>
+      <td>0.108672</td>
+      <td>0.266332</td>
+      <td>0.648241</td>
+      <td>0.065327</td>
+      <td>0.020101</td>
+      <td>597</td>
     </tr>
     <tr>
-      <th>86000US63936</th>
-      <td>40250</td>
-      <td>41.6</td>
-      <td>1.000000</td>
+      <th>86000US64075</th>
+      <td>55746</td>
+      <td>36.2</td>
+      <td>0.980485</td>
+      <td>0.006057</td>
       <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.008174</td>
-      <td>0.281573</td>
-      <td>0.650104</td>
-      <td>0.066253</td>
-      <td>0.002070</td>
-      <td>483</td>
+      <td>0.001094</td>
+      <td>0.000925</td>
+      <td>0.002860</td>
+      <td>0.008580</td>
+      <td>0.079240</td>
+      <td>0.104852</td>
+      <td>0.726011</td>
+      <td>0.110647</td>
+      <td>0.058491</td>
+      <td>7420</td>
     </tr>
     <tr>
-      <th>86000US50147</th>
-      <td>41071</td>
-      <td>50.3</td>
-      <td>0.977823</td>
+      <th>86000US04471</th>
+      <td>28250</td>
+      <td>55.0</td>
+      <td>0.974359</td>
+      <td>0.003945</td>
+      <td>0.000000</td>
+      <td>0.017751</td>
       <td>0.000000</td>
       <td>0.000000</td>
-      <td>0.018145</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.004032</td>
-      <td>0.000000</td>
-      <td>0.163043</td>
-      <td>0.739130</td>
-      <td>0.070652</td>
-      <td>0.027174</td>
-      <td>368</td>
+      <td>0.003945</td>
+      <td>0.001972</td>
+      <td>0.087065</td>
+      <td>0.753731</td>
+      <td>0.109453</td>
+      <td>0.049751</td>
+      <td>402</td>
     </tr>
     <tr>
-      <th>86000US92805</th>
-      <td>53532</td>
-      <td>29.2</td>
-      <td>0.788453</td>
-      <td>0.018416</td>
-      <td>0.004304</td>
-      <td>0.065406</td>
-      <td>0.005883</td>
-      <td>0.092737</td>
-      <td>0.024802</td>
-      <td>0.772873</td>
-      <td>0.406438</td>
-      <td>0.446810</td>
-      <td>0.106477</td>
-      <td>0.040275</td>
-      <td>41192</td>
+      <th>86000US37862</th>
+      <td>35895</td>
+      <td>39.1</td>
+      <td>0.927299</td>
+      <td>0.013939</td>
+      <td>0.005922</td>
+      <td>0.020225</td>
+      <td>0.000410</td>
+      <td>0.026192</td>
+      <td>0.006013</td>
+      <td>0.119984</td>
+      <td>0.195993</td>
+      <td>0.635074</td>
+      <td>0.111396</td>
+      <td>0.057537</td>
+      <td>15225</td>
     </tr>
     <tr>
-      <th>86000US75764</th>
-      <td>35833</td>
-      <td>39.8</td>
-      <td>0.963964</td>
-      <td>0.036036</td>
+      <th>86000US65230</th>
+      <td>53109</td>
+      <td>47.5</td>
+      <td>0.833083</td>
+      <td>0.106767</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
+      <td>0.060150</td>
       <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.235294</td>
-      <td>0.623529</td>
-      <td>0.070588</td>
-      <td>0.070588</td>
-      <td>85</td>
+      <td>0.188605</td>
+      <td>0.636542</td>
+      <td>0.115914</td>
+      <td>0.058939</td>
+      <td>509</td>
     </tr>
   </tbody>
 </table>
@@ -1483,8 +1494,8 @@ Name: Sales, dtype: float64</pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="summary"></a></p>
-<h3 id="Here's-what-this-table-shows-us.">Here's what this table shows us.<a class="anchor-link" href="#Here's-what-this-table-shows-us.">&#182;</a></h3><h4 id="Incomes-are-much-higher">Incomes are much higher<a class="anchor-link" href="#Incomes-are-much-higher">&#182;</a></h4><p>Median household income overall is about $22,000 higher than the country as a whole, which is <strong>very</strong> significant as that represents a nearly 50\% increase in income in these zip codes we sell to.</p>
-<h4 id="Education-is-greater">Education is greater<a class="anchor-link" href="#Education-is-greater">&#182;</a></h4><p>The percentage of people with high school diplomas but no college degree is almost 24\% lower in our sales zips, and that is compensated by a much greater number of college grads (16\% higher) and people with graduate degrees of some sort (12\% higher).</p>
+<h3 id="Here's-what-this-table-shows-us.">Here's what this table shows us.<a class="anchor-link" href="#Here's-what-this-table-shows-us.">&#182;</a></h3><h4 id="Incomes-are-much-higher">Incomes are much higher<a class="anchor-link" href="#Incomes-are-much-higher">&#182;</a></h4><p>Median household income overall is about $22,000 higher than the country as a whole, which is <strong>very</strong> significant as that represents a nearly 50% increase in income in these zip codes we sell to.</p>
+<h4 id="Education-is-greater">Education is greater<a class="anchor-link" href="#Education-is-greater">&#182;</a></h4><p>The percentage of people with high school diplomas but no college degree is almost 24% lower in our sales zips, and that is compensated by a much greater number of college grads (16% higher) and people with graduate degrees of some sort (12% higher).</p>
 <h4 id="People-are-a-little-younger">People are a little younger<a class="anchor-link" href="#People-are-a-little-younger">&#182;</a></h4><p>Males and females are about 3 1/2 years younger in our zip codes than in the country as a whole.</p>
 <h4 id="White-population-is-lower">White population is lower<a class="anchor-link" href="#White-population-is-lower">&#182;</a></h4><p>The white population is lower, and there is a corresponding higher number of other races.</p>
 
@@ -1843,7 +1854,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
@@ -1857,7 +1868,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># update sales table</span>
@@ -1878,8 +1889,8 @@ Name: Sales, dtype: float64</pre>
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 53, u&apos;time&apos;: 0.014}
-{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.314}
+<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 53, u&apos;time&apos;: 0.071}
+{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.358}
 </pre>
 </div>
 </div>
@@ -1899,7 +1910,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># output good Census zips to a list</span>
@@ -1913,7 +1924,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># generate PostgreSQL INSERT statements for CartoDB</span>
@@ -1927,7 +1938,7 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">try</span><span class="p">:</span>
@@ -1947,8 +1958,8 @@ Name: Sales, dtype: float64</pre>
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 38, u&apos;time&apos;: 0.006}
-{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.225}
+<pre>{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 38, u&apos;time&apos;: 0.016}
+{u&apos;fields&apos;: {}, u&apos;rows&apos;: [], u&apos;total_rows&apos;: 1, u&apos;time&apos;: 0.21}
 </pre>
 </div>
 </div>
@@ -1962,19 +1973,20 @@ Name: Sales, dtype: float64</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="mapping"></a></p>
 <h2 id="Display-the-dynamic-map">Display the dynamic map<a class="anchor-link" href="#Display-the-dynamic-map">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="nx">javascript</span>
 <span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;link rel=&quot;stylesheet&quot; href=&quot;http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css&quot; /&gt;&#39;</span><span class="p">);</span>
 <span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;h2&gt;High value target sales areas&lt;/h2&gt;&#39;</span><span class="p">);</span>
-<span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;div id=&quot;map&quot; style=&quot;height:450px;width:850px;padding:0;margin:0&quot;&gt;&lt;/div&gt;&#39;</span><span class="p">);</span>
+<span class="nx">element</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;div id=&quot;map&quot; style=&quot;height:450px;width:768px;padding:0;margin:0&quot;&gt;&lt;/div&gt;&#39;</span><span class="p">);</span>
 
 <span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
   <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
