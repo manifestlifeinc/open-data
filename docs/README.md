@@ -21,6 +21,21 @@ A usage log from our cognitive event finder chatbot demo used at South by Southw
 
 Raw Cloudant access via [https://opendata.cloudant.com/sxswlog](https://opendata.cloudant.com/sxswlog)
 
+## US Demographic data 2014
+
+Demographic data from the US Census American Community Survey 2014 publication. 
+
+Stored in IBM Object Storage.
+
+Raw data access via this service [https://openobjectstore.mybluemix.net/censusacs2014](https://openobjectstore.mybluemix.net/censusacs2014)
+
+## US Presidential Election 2016
+
+Election results and demographic data in CSV files.
+
+Stored in IBM Object Storage.
+
+Raw data access via this service [https://openobjectstore.mybluemix.net/Election](https://openobjectstore.mybluemix.net/Election)
 
 ## US Congressional districts 
 
