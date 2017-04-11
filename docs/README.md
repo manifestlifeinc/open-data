@@ -19,4 +19,18 @@ A usage log from our cognitive event finder chatbot demo used at South by Southw
 
 [Described in this blog](https://medium.com/ibm-watson-data-lab/the-most-popular-search-term-at-sxsw-according-to-our-chatbot-9f4a47a33406). 
 
-Raw Cloudant access via https://opendata.cloudant.com/sxswlog
+Raw Cloudant access via [https://opendata.cloudant.com/sxswlog](https://opendata.cloudant.com/sxswlog)
+
+
+## US Congressional districts 
+
+For the 114th Congress.
+
+Raw Cloudant access via [https://opendata.cloudant.com/uscongress114](https://opendata.cloudant.com/uscongress114)
+
+## US Zip codes
+
+Compiled in 2016
+
+Raw Cloudant access via [https://opendata.cloudant.com/zipcodes-us](https://opendata.cloudant.com/zipcodes-us)
+
