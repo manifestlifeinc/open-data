@@ -78,3 +78,48 @@ For the 114th Congress.
 
 **Update schedule:** n/a
 
+## Million dollar home sales
+
+3 months of home sales in northeastern Massachusetts, downloaded January 27, 2017. Data acquired from [Redfin](http://www.redfin.com), a national real estate brokerage.
+
+**API:** CSV via [GitHub](https://github.com/ibm-cds-labs/open-data/blob/master/homesales/milliondollarhomes.csv) or GeoJSON via [GitHub](https://github.com/ibm-cds-labs/open-data/blob/master/homesales/milliondollarhomes.geojson)
+
+**Format:** [GeoJSON](http://geojson.org) or [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)
+
+**Database:** none
+
+**Update schedule:** n/a
+
+## US Cars
+
+Performance characteristics of selected US car models from 1970 to 1982. 
+
+**API:** [GitHub](https://github.com/ibm-cds-labs/open-data/blob/master/cars/cars.csv)
+
+**Format:** [GeoJSON](http://geojson.org) or [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)
+
+**Database:** none
+
+**Update schedule:** n/a
+
+## World Cities
+
+**API:** [GitHub](https://github.com/ibm-cds-labs/open-data/blob/master/cities/cities.json)
+
+**Format:** [GeoJSON](http://geojson.org)
+
+**Database:** none
+
+**Update schedule:** n/a
+
+## Movies
+
+595 select movies
+
+**API:** [GitHub](https://github.com/ibm-cds-labs/open-data/blob/master/movies/movies.tsv)
+
+**Format:** [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)
+
+**Database:** none
+
+**Update schedule:** n/a
